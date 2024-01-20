@@ -1,6 +1,7 @@
 const name = 'basecamp'
 const displayName = 'Basecamp'
 
+
 class Basecamp {
   description = {
     description: 'Interact with the Basecamp API',
@@ -24,18 +25,51 @@ class Basecamp {
     
     version: 1,
     group: ['transform'],
-    subtitle: '={{$parameter["operation"]}}',
+    subtitle: '={{(await this.getCredentials("oAuth2Api")).oauthTokenData.access_token}}',
     inputs: ['main'],
-    outputs: ['main'],
+    outputs: ['main']
+  }
+
+  async execute() {
+    const baseUrl = "https://3.basecampapi.com"
+    const baseID = 5278257
+    const operation = this.getNodeParameter('operation', 0)
     
-    requestDefaults: {
-      baseURL: 'https://3.basecampapi.com/',
-      url: '',
+    const uri = `${baseUrl}/${baseID}/${operation}.json`
+
+    const baseOptions = {
+      method: 'GET',
       headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
       },
+      resolveWithFullResponse: true,
+      json: true
     }
+
+    const response = await this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
+      uri,
+      ...baseOptions
+    })
+
+    let lastResponse = response
+    let data = response.body
+
+    for(let i = 0; i < 10; i++) {
+      if (lastResponse.headers.link) {
+        const link = lastResponse.headers.link.split(';')[0].replace('<', '').replace('>', '')
+        const newData = await this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
+          uri: link,
+          ...baseOptions
+        })
+        data = data.concat(newData.body)
+        lastResponse = newData
+      } else {
+        break
+      }
+    }
+
+    return [this.helpers.returnJsonArray(data)]
   }
 }
 
@@ -47,10 +81,10 @@ const pickResource = {
   
   type: 'options',
   default: 'project',
-  options: [{
-    name: 'Project',
-    value: 'project'
-  }]
+  options: [
+    { name: 'Project', value: 'project' }, 
+    { name: 'People', value: 'people' },
+  ]
 }
 
 const pickAction = {
@@ -69,28 +103,16 @@ const pickAction = {
   options: [
     {
       name: 'Get all projects',
-      value: 'get_projects',
+      value: 'projects',
       action: 'Get all projects',
-      routing: {
-        request: {
-          method: 'GET',
-          url: '/projects.json',
-        },
-      },
     },
     {
       name: 'Get a project',
       value: 'get_project',
       action: 'Get a project',
-      routing: {
-        request: {
-          method: 'GET',
-          url: '/projects/{{project_id}}.json',
-        },
-      },
     },
   ],
-  default: 'get_projects'
+  default: 'projects'
 }
 
 const pickID = {
