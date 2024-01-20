@@ -15,6 +15,7 @@ class Basecamp {
     properties: [
       pickResource,
       pickAction,
+      pickActionPeople,
       pickID,
     ],
 
@@ -25,7 +26,7 @@ class Basecamp {
     
     version: 1,
     group: ['transform'],
-    subtitle: '={{(await this.getCredentials("oAuth2Api")).oauthTokenData.access_token}}',
+    subtitle: '={{$parameter["operation"]}}',
     inputs: ['main'],
     outputs: ['main']
   }
@@ -34,10 +35,9 @@ class Basecamp {
     const baseUrl = "https://3.basecampapi.com"
     const baseID = 5278257
     const operation = this.getNodeParameter('operation', 0)
-    
-    const uri = `${baseUrl}/${baseID}/${operation}.json`
 
-    const baseOptions = {
+    const req = (uri) => this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
+      uri,
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -45,28 +45,22 @@ class Basecamp {
       },
       resolveWithFullResponse: true,
       json: true
-    }
-
-    const response = await this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
-      uri,
-      ...baseOptions
     })
 
-    let lastResponse = response
-    let data = response.body
+    let uri = `${baseUrl}/${baseID}/${operation}.json`
+
+    let data = []
 
     for(let i = 0; i < 10; i++) {
-      if (lastResponse.headers.link) {
-        const link = lastResponse.headers.link.split(';')[0].replace('<', '').replace('>', '')
-        const newData = await this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
-          uri: link,
-          ...baseOptions
-        })
-        data = data.concat(newData.body)
-        lastResponse = newData
-      } else {
-        break
-      }
+      const { body, headers: { link } } = await req(uri)
+      
+      data.push(...body)
+
+      if(!link) break
+
+      uri = link.split(';')[0]
+        .replace('<', '')
+        .replace('>', '')
     }
 
     return [this.helpers.returnJsonArray(data)]
@@ -113,6 +107,34 @@ const pickAction = {
     },
   ],
   default: 'projects'
+}
+
+const pickActionPeople = {
+  displayName: 'Operation',
+  name: 'operation',
+  type: 'options',
+  
+  noDataExpression: true,
+  
+  displayOptions: {
+    show: {
+      resource: ['people'],
+    },
+  },
+  
+  options: [
+    {
+      name: 'Get all people',
+      value: 'people',
+      action: 'Get all people',
+    },
+    {
+      name: 'Get a person',
+      value: 'person',
+      action: 'Get a person',
+    },
+  ],
+  default: 'people'
 }
 
 const pickID = {
