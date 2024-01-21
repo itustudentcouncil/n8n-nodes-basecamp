@@ -1,6 +1,17 @@
 const name = 'basecamp'
 const displayName = 'Basecamp'
 
+const routes = {
+  people: {
+    index: 'people',
+    people_on_project: 'projects/:id/people',
+    access: 'projects/:id/people/users'
+  },
+  projects: {
+    index: 'projects',
+    show: 'projects/:id'
+  }
+}
 
 class Basecamp {
   description = {
@@ -17,6 +28,7 @@ class Basecamp {
       pickAction,
       pickActionPeople,
       pickID,
+      body
     ],
 
     credentials: [{
@@ -34,11 +46,21 @@ class Basecamp {
   async execute() {
     const baseUrl = "https://3.basecampapi.com"
     const baseID = 5278257
+    const resource = this.getNodeParameter('resource', 0)
     const operation = this.getNodeParameter('operation', 0)
+    let body
+
+    let method = 'GET'
+
+    if (operation === 'access') {
+      method = 'PUT'
+      body = this.getNodeParameter('body', 0)
+    }
 
     const req = (uri) => this.helpers.requestWithAuthentication.call(this, 'oAuth2Api', {
       uri,
-      method: 'GET',
+      method,
+      body: body ? JSON.parse(body) : undefined,
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
@@ -47,12 +69,30 @@ class Basecamp {
       json: true
     })
 
-    let uri = `${baseUrl}/${baseID}/${operation}.json`
+    console.log(resource, operation)
+
+    let route = routes[resource][operation]
+    console.log(route)
+
+    // if parent id is required
+    if(route.includes(':id')) {
+      const parent_id = this.getNodeParameter('parent_id', 0)
+      route = route.replace(':id', parent_id)
+    }
+
+    let uri = `${baseUrl}/${baseID}/${route}.json`
+
+    console.log(uri)
 
     let data = []
 
     for(let i = 0; i < 10; i++) {
       const { body, headers: { link } } = await req(uri)
+
+      // if not array
+      if(!Array.isArray(body)) {
+        return [this.helpers.returnJsonArray([body])]
+      }
       
       data.push(...body)
 
@@ -74,10 +114,10 @@ const pickResource = {
   noDataExpression: true,
   
   type: 'options',
-  default: 'project',
+  default: 'people',
   options: [
-    { name: 'Project', value: 'project' }, 
     { name: 'People', value: 'people' },
+    { name: 'Projects', value: 'projects' }, 
   ]
 }
 
@@ -90,23 +130,23 @@ const pickAction = {
   
   displayOptions: {
     show: {
-      resource: ['project'],
+      resource: ['projects'],
     },
   },
   
   options: [
     {
       name: 'Get all projects',
-      value: 'projects',
-      action: 'Get all projects',
+      value: 'index',
+      action: 'Get all projects'
     },
     {
       name: 'Get a project',
-      value: 'get_project',
+      value: 'show',
       action: 'Get a project',
     },
   ],
-  default: 'projects'
+  default: 'index'
 }
 
 const pickActionPeople = {
@@ -125,30 +165,47 @@ const pickActionPeople = {
   options: [
     {
       name: 'Get all people',
-      value: 'people',
+      value: 'index',
       action: 'Get all people',
     },
     {
-      name: 'Get a person',
-      value: 'person',
-      action: 'Get a person',
+      name: 'Get people on a project',
+      value: 'people_on_project',
+      action: 'Get people on a project',
     },
+    {
+      name: 'Update access',
+      value: 'access',
+      action: 'Update access'
+    }
   ],
   default: 'people'
 }
 
 const pickID = {
-  displayName: 'Project ID',
+  displayName: 'Parent ID',
   description: '',
-  name: 'project_id',
+  name: 'parent_id',
   type: 'number',
   required: true,
-  default: 'queryParameter',
-  
+
   displayOptions: {
     show: {
-      resource: ['project'],
-      operation: ['get_project'],
+      operation: ['show', 'people_on_project', 'access'],
+    }
+  }
+}
+
+const body = {
+  displayName: 'Body',
+  description: 'The body of the request',
+  name: 'body',
+  type: 'json',
+  required: true,
+
+  displayOptions: {
+    show: {
+      operation: ['access'],
     }
   }
 }
