@@ -2,7 +2,7 @@
   "name": "@itustudentcouncil/n8n-nodes-basecamp",
   "description": "Connect n8n to Basecamp 4",
   
-  "version": "0.1.1",
+  "version": "0.2.3",
   "author": "Viktor Shamal Andersen",
   "license": "MIT",
   "keywords": ["n8n-community-node-package"],

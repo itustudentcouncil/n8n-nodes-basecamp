@@ -179,7 +179,7 @@ const pickActionPeople = {
       action: 'Update access'
     }
   ],
-  default: 'people'
+  default: 'index'
 }
 
 const pickID = {
