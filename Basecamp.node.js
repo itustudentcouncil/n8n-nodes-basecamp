@@ -5,13 +5,46 @@ const routes = {
   people: {
     index: "people",
     people_on_project: "projects/:id/people",
-    access: "projects/:id/people/users"
+    users: "projects/:id/people/users"
   },
   projects: {
     index: "projects",
     show: "projects/:id"
+  },
+  uploads: {
+    index: "buckets/:projectId/vaults/:vaultId/uploads",
+    show: "buckets/:projectId/uploads/:uploadId",
+    create: "buckets/:projectId/vaults/:vaultId/uploads",
+    update: "buckets/:projectId/uploads/:uploadId",
+    delete: "buckets/:projectId/uploads/:uploadId"
   }
 }
+
+const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1)
+
+const resources = Object.keys(routes).map((key) => ({
+  name: capitalize(key),
+  value: key
+}))
+
+const actionToLabel = {
+  index: "Get all",
+  show: "Get",
+  create: "Create",
+  update: "Update",
+  delete: "Delete"
+}
+
+const actions = Object.keys(routes).map((action) =>
+  createAction(
+    action,
+    Object.keys(routes[action]).map((key) => ({
+      name: actionToLabel[key],
+      value: key,
+      action: key
+    }))
+  )
+)
 
 class Basecamp {
   description = {
@@ -23,7 +56,7 @@ class Basecamp {
 
     defaults: { name: displayName },
 
-    properties: [pickResource, pickAction, pickActionPeople, pickID, body],
+    properties: [resourceSelector, ...actions, idSelector, body],
 
     credentials: [
       {
@@ -48,7 +81,7 @@ class Basecamp {
 
     let method = "GET"
 
-    if (operation === "access") {
+    if (operation === "users") {
       method = "PUT"
       body = this.getNodeParameter("body", 0)
     }
@@ -100,83 +133,38 @@ class Basecamp {
   }
 }
 
-const pickResource = {
-  displayName: "Recording Type",
+const resourceSelector = {
+  displayName: "Resource Type",
   name: "resource",
 
   noDataExpression: true,
 
   type: "options",
-  default: "people",
-  options: [
-    { name: "People", value: "people" },
-    { name: "Projects", value: "projects" }
-  ]
+  default: resources[0].value,
+  options: resources
 }
 
-const pickAction = {
-  displayName: "Operation",
-  name: "operation",
-  type: "options",
+function createAction(resource, options) {
+  return {
+    displayName: "Operation",
+    name: "operation",
+    type: "options",
 
-  noDataExpression: true,
+    noDataExpression: true,
 
-  displayOptions: {
-    show: {
-      resource: ["projects"]
-    }
-  },
-
-  options: [
-    {
-      name: "Get all projects",
-      value: "index",
-      action: "Get all projects"
+    displayOptions: {
+      show: {
+        resource: [resource]
+      }
     },
-    {
-      name: "Get a project",
-      value: "show",
-      action: "Get a project"
-    }
-  ],
-  default: "index"
+
+    options: options,
+    default: options[0].value
+  }
 }
 
-const pickActionPeople = {
-  displayName: "Operation",
-  name: "operation",
-  type: "options",
-
-  noDataExpression: true,
-
-  displayOptions: {
-    show: {
-      resource: ["people"]
-    }
-  },
-
-  options: [
-    {
-      name: "Get all people",
-      value: "index",
-      action: "Get all people"
-    },
-    {
-      name: "Get people on a project",
-      value: "people_on_project",
-      action: "Get people on a project"
-    },
-    {
-      name: "Update access",
-      value: "access",
-      action: "Update access"
-    }
-  ],
-  default: "index"
-}
-
-const pickID = {
-  displayName: "Parent ID",
+const idSelector = {
+  displayName: "ID",
   description: "",
   name: "parent_id",
   type: "number",
@@ -184,7 +172,11 @@ const pickID = {
 
   displayOptions: {
     show: {
-      operation: ["show", "people_on_project", "access"]
+      operation: Object.entries(routes).flatMap(([resource, operations]) =>
+        Object.keys(operations)
+          .filter((operation) => operations[operation].includes(":id"))
+          .map((operation) => `${operation}`)
+      )
     }
   }
 }
@@ -198,7 +190,7 @@ const body = {
 
   displayOptions: {
     show: {
-      operation: ["access"]
+      operation: ["users"]
     }
   }
 }
