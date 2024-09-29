@@ -1,0 +1,6 @@
+{
+	"node": "n8n-nodes-base.payhawk",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Development", "Developer Tools"]
+}

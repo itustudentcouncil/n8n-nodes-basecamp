@@ -1,0 +1,163 @@
+syntax = "proto3";
+
+import "zitadel/object.proto";
+import "validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+package zitadel.org.v1;
+
+option go_package ="github.com/zitadel/zitadel/pkg/grpc/org";
+
+message Org {
+    string id = 1 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"69629023906488334\""
+        }
+    ];
+    zitadel.v1.ObjectDetails details = 2;
+    OrgState state = 3 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "current state of the organization";
+        }
+    ];
+    string name = 4 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"ZITADEL\"";
+        }
+    ];
+    string primary_domain = 5 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"zitadel.cloud\"";
+        }
+    ];
+}
+
+enum OrgState {
+    ORG_STATE_UNSPECIFIED = 0;
+    ORG_STATE_ACTIVE = 1;
+    ORG_STATE_INACTIVE = 2;
+    ORG_STATE_REMOVED = 3;
+}
+
+message Domain {
+    string org_id = 1 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"69629023906488334\""
+        }
+    ];
+    zitadel.v1.ObjectDetails details = 2;
+    string domain_name = 3 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"zitadel.com\"";
+        }
+    ];
+    bool is_verified = 4 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines if the domain is verified"
+        }
+    ];
+    bool is_primary = 5 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines if the domain is the primary domain"
+        }
+    ];
+    DomainValidationType validation_type = 6 [
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines the protocol the domain was validated with";
+        }
+    ];
+}
+
+enum DomainValidationType {
+    DOMAIN_VALIDATION_TYPE_UNSPECIFIED = 0;
+    DOMAIN_VALIDATION_TYPE_HTTP = 1;
+    DOMAIN_VALIDATION_TYPE_DNS = 2;
+}
+
+message OrgQuery {
+    oneof query {
+        option (validate.required) = true;
+
+        OrgNameQuery name_query = 1;
+        OrgDomainQuery domain_query = 2;
+        OrgStateQuery state_query = 3;
+        OrgIDQuery id_query = 4;
+    }
+}
+
+message OrgNameQuery {
+    string name = 1 [
+        (validate.rules).string = {max_len: 200},
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"ZITADEL\"";
+        }
+    ];
+    zitadel.v1.TextQueryMethod method = 2 [
+        (validate.rules).enum.defined_only = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines which text equality method is used";
+        }
+    ];
+}
+
+message OrgDomainQuery {
+    string domain = 1 [
+        (validate.rules).string = {max_len: 200},
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"citadel.cloud\"";
+        }
+    ];
+    zitadel.v1.TextQueryMethod method = 2 [
+        (validate.rules).enum.defined_only = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines which text equality method is used";
+        }
+    ];
+}
+
+message OrgStateQuery {
+    OrgState state = 1 [
+        (validate.rules).enum.defined_only = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "current state of the organization";
+        }
+    ];
+}
+
+message OrgIDQuery {
+    string id = 1 [
+        (validate.rules).string = {max_len: 200},
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"69629023906488334\""
+        }
+    ];
+}
+
+
+enum OrgFieldName {
+    ORG_FIELD_NAME_UNSPECIFIED = 0;
+    ORG_FIELD_NAME_NAME = 1;
+}
+
+message DomainSearchQuery {
+    oneof query {
+        option (validate.required) = true;
+
+        DomainNameQuery domain_name_query = 1;
+    }
+}
+
+message DomainNameQuery {
+    string name = 1 [
+        (validate.rules).string = {max_len: 200},
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            example: "\"zitadel.cloud\"";
+        }
+    ];
+    zitadel.v1.TextQueryMethod method = 2 [
+        (validate.rules).enum.defined_only = true,
+        (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+            description: "defines which text equality method is used";
+        }
+    ];
+}

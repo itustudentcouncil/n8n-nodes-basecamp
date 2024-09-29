@@ -1,0 +1,1068 @@
+syntax = "proto3";
+
+import "zitadel/object.proto";
+import "zitadel/options.proto";
+import "zitadel/instance.proto";
+import "zitadel/member.proto";
+import "zitadel/quota.proto";
+import "zitadel/auth_n_key.proto";
+import "zitadel/feature.proto";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "validate/validate.proto";
+
+package zitadel.system.v1;
+
+option go_package = "github.com/zitadel/zitadel/pkg/grpc/system";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "System API";
+    version: "1.0";
+    description: "This API is intended to configure and manage the different tenants whithin ZITADEL.";
+    contact:{
+      name: "ZITADEL"
+      url: "https://zitadel.com"
+      email: "hi@zitadel.com"
+    }
+    license: {
+      name: "Apache 2.0",
+      url: "https://github.com/zitadel/zitadel/blob/main/LICENSE";
+    };
+  };
+  tags: [
+    {
+        name: "General"
+    },
+    {
+        name: "Usage Control"
+    },
+    {
+        name: "Limits"
+    },
+    {
+        name: "Quotas"
+    }
+  ];
+  schemes: HTTPS;
+  schemes: HTTP;
+
+  consumes: "application/json";
+  consumes: "application/grpc";
+
+  produces: "application/json";
+  produces: "application/grpc";
+
+  consumes: "application/grpc-web+proto";
+  produces: "application/grpc-web+proto";
+
+  host: "$CUSTOM-DOMAIN";
+  base_path: "/system/v1";
+
+  external_docs: {
+    description: "Detailed information about ZITADEL",
+    url: "https://zitadel.com/docs"
+  }
+
+  responses: {
+    key: "403";
+    value: {
+      description: "Returned when the user does not have permission to access the resource.";
+      schema: {
+        json_schema: {
+          ref: "#/definitions/rpcStatus";
+        }
+      }
+    }
+  }
+  responses: {
+    key: "404";
+    value: {
+      description: "Returned when the resource does not exist.";
+      schema: {
+        json_schema: {
+          ref: "#/definitions/rpcStatus";
+        }
+      }
+    }
+  }
+};
+
+service SystemService {
+  //Indicates if ZITADEL is running.
+  // It respondes as soon as ZITADEL started
+  rpc Healthz(HealthzRequest) returns (HealthzResponse) {
+    option (google.api.http) = {
+      get: "/healthz";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "General";
+      responses: {
+        key: "200";
+        value: {
+          description: "ZITADEL started";
+        };
+      }
+      responses: {
+        key: "default";
+        value: {
+          description: "ZITADEL NOT started yet";
+        };
+      }
+    };
+  }
+
+  // Returns a list of ZITADEL instances
+  rpc ListInstances(ListInstancesRequest) returns (ListInstancesResponse) {
+    option (google.api.http) = {
+      post: "/instances/_search"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.read";
+    };
+  }
+
+  // Returns the detail of an instance
+  rpc GetInstance(GetInstanceRequest) returns (GetInstanceResponse) {
+    option (google.api.http) = {
+      get: "/instances/{instance_id}";
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.read";
+    };
+  }
+
+  // Deprecated: Use CreateInstance instead
+  // Creates a new instance with all needed setup data
+  // This might take some time
+  rpc AddInstance(AddInstanceRequest) returns (AddInstanceResponse) {
+    option (google.api.http) = {
+      post: "/instances"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.write";
+    };
+  }
+
+  // Updates name of an existing instance
+  rpc UpdateInstance(UpdateInstanceRequest) returns (UpdateInstanceResponse) {
+    option (google.api.http) = {
+      put: "/instances/{instance_id}"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.write";
+    };
+  }
+
+  // Creates a new instance with all needed setup data
+  // This might take some time
+  rpc CreateInstance(CreateInstanceRequest) returns (CreateInstanceResponse) {
+    option (google.api.http) = {
+      post: "/instances/_create"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.write";
+    };
+  }
+
+  // Removes an instance
+  // This might take some time
+  rpc RemoveInstance(RemoveInstanceRequest) returns (RemoveInstanceResponse) {
+    option (google.api.http) = {
+      delete: "/instances/{instance_id}"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.instance.delete";
+    };
+  }
+
+  //Returns all instance members matching the request
+  // all queries need to match (ANDed)
+  // Deprecated: Use the Admin APIs ListIAMMembers instead
+  rpc ListIAMMembers(ListIAMMembersRequest) returns (ListIAMMembersResponse) {
+    option (google.api.http) = {
+      post: "/instances/{instance_id}/members/_search";
+      body: "*";
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.iam.member.read";
+    };
+  }
+
+  //Checks if a domain exists
+  rpc ExistsDomain(ExistsDomainRequest) returns (ExistsDomainResponse) {
+    option (google.api.http) = {
+      post: "/domains/{domain}/_exists";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.domain.read";
+    };
+  }
+
+  // Returns the custom domains of an instance
+  //Checks if a domain exists
+  // Deprecated: Use the Admin APIs ListInstanceDomains on the admin API instead
+  rpc ListDomains(ListDomainsRequest) returns (ListDomainsResponse) {
+    option (google.api.http) = {
+      post: "/instances/{instance_id}/domains/_search";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.domain.read";
+    };
+  }
+
+  // Adds a domain to an instance
+  rpc AddDomain(AddDomainRequest) returns (AddDomainResponse) {
+    option (google.api.http) = {
+      post: "/instances/{instance_id}/domains";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.domain.write";
+    };
+  }
+
+  // Removes the domain of an instance
+  rpc RemoveDomain(RemoveDomainRequest) returns (RemoveDomainResponse) {
+    option (google.api.http) = {
+      delete: "/instances/{instance_id}/domains/{domain}";
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.domain.delete";
+    };
+  }
+
+  // Sets the primary domain of an instance
+  rpc SetPrimaryDomain(SetPrimaryDomainRequest) returns (SetPrimaryDomainResponse) {
+    option (google.api.http) = {
+      post: "/instances/{instance_id}/domains/_set_primary";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.domain.write";
+    };
+  }
+
+  //Returns all stored read models of ZITADEL
+  // views are used for search optimisation and optimise request latencies
+  // they represent the delta of the event happend on the objects
+  rpc ListViews(ListViewsRequest) returns (ListViewsResponse) {
+    option (google.api.http) = {
+      post: "/views/_search";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.debug.read";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "views";
+      responses: {
+        key: "200";
+        value: {
+          description: "Views for query operations";
+        };
+      };
+    };
+  }
+
+  //Truncates the delta of the change stream
+  // be carefull with this function because ZITADEL has to
+  // recompute the deltas after they got cleared.
+  // Search requests will return wrong results until all deltas are recomputed
+  rpc ClearView(ClearViewRequest) returns (ClearViewResponse) {
+    option (google.api.http) = {
+      post: "/views/{database}/{view_name}";
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.debug.write";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "views";
+      responses: {
+        key: "200";
+        value: {
+          description: "View cleared";
+        };
+      };
+    };
+  }
+
+  //Returns event descriptions which cannot be processed.
+  // It's possible that some events need some retries.
+  // For example if the SMTP-API wasn't able to send an email at the first time
+  rpc ListFailedEvents(ListFailedEventsRequest) returns (ListFailedEventsResponse) {
+    option (google.api.http) = {
+      post: "/failedevents/_search";
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.debug.read";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "failed events";
+      responses: {
+        key: "200";
+        value: {
+          description: "Events which were not processed by the views";
+        };
+      };
+    };
+  }
+
+  //Deletes the event from failed events view.
+  // the event is not removed from the change stream
+  // This call is usefull if the system was able to process the event later.
+  // e.g. if the second try of sending an email was successful. the first try produced a
+  // failed event. You can find out if it worked on the `failure_count`
+  rpc RemoveFailedEvent(RemoveFailedEventRequest) returns (RemoveFailedEventResponse) {
+    option (google.api.http) = {
+      delete: "/failedevents/{database}/{view_name}/{failed_sequence}";
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.debug.delete";
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: "failed events";
+      responses: {
+        key: "200";
+        value: {
+          description: "Events removed from the list";
+        };
+      };
+      responses: {
+        key: "400";
+        value: {
+          description: "failed event not found";
+          schema: {
+            json_schema: {
+              ref: "#/definitions/rpcStatus";
+            };
+          };
+        };
+      };
+    };
+  }
+
+  // Creates a new quota
+  // Returns an error if the quota already exists for the specified unit
+  // Deprecated: use SetQuota instead
+  rpc AddQuota(AddQuotaRequest) returns (AddQuotaResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Quotas"];
+    };
+
+    option (google.api.http) = {
+      post: "/instances/{instance_id}/quotas"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.quota.write";
+    };
+  }
+
+  // Sets quota configuration properties
+  // Creates a new quota if it doesn't exist for the specified unit
+  rpc SetQuota(SetQuotaRequest) returns (SetQuotaResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Quotas"];
+    };
+
+    option (google.api.http) = {
+      put: "/instances/{instance_id}/quotas"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.quota.write";
+    };
+  }
+
+  // Removes a quota
+  rpc RemoveQuota(RemoveQuotaRequest) returns (RemoveQuotaResponse) {
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Quotas"];
+    };
+
+    option (google.api.http) = {
+      delete: "/instances/{instance_id}/quotas/{unit}"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.quota.delete";
+    };
+  }
+
+  // Set a feature flag on an instance
+  rpc SetInstanceFeature(SetInstanceFeatureRequest) returns (SetInstanceFeatureResponse) {
+    option (google.api.http) = {
+      put: "/instances/{instance_id}/features/{feature_id}"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.feature.write";
+    };
+  }
+
+  // Sets instance level limits
+  rpc SetLimits(SetLimitsRequest) returns (SetLimitsResponse) {
+    option (google.api.http) = {
+      put: "/instances/{instance_id}/limits"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.limits.write";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Limits"];
+      responses: {
+        key: "200";
+        value: {
+          description: "Instance limits set";
+        };
+      };
+      responses: {
+        key: "400";
+        value: {
+          description: "At least one limit must be specified";
+          schema: {
+            json_schema: {
+              ref: "#/definitions/rpcStatus";
+            };
+          };
+        };
+      };
+    };
+  }
+
+  // Sets many instance level limits
+  rpc BulkSetLimits(BulkSetLimitsRequest) returns (BulkSetLimitsResponse) {
+    option (google.api.http) = {
+      put: "/instances/limits/_bulk"
+      body: "*"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.limits.write";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Limits"];
+      responses: {
+        key: "200";
+        value: {
+          description: "Instance limits set";
+        };
+      };
+      responses: {
+        key: "400";
+        value: {
+          description: "At least one limit must be specified for each instance";
+          schema: {
+            json_schema: {
+              ref: "#/definitions/rpcStatus";
+            };
+          };
+        };
+      };
+    };
+  }
+
+
+
+  // Resets instance level limits
+  rpc ResetLimits(ResetLimitsRequest) returns (ResetLimitsResponse) {
+    option (google.api.http) = {
+      delete: "/instances/{instance_id}/limits"
+    };
+
+    option (zitadel.v1.auth_option) = {
+      permission: "system.limits.delete";
+    };
+
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      tags: ["Usage Control", "Limits"];
+      responses: {
+        key: "200";
+        value: {
+          description: "Limits are reset to the system defaults";
+        };
+      };
+      responses: {
+        key: "404";
+        value: {
+          description: "Limits are already set to the system defaults";
+          schema: {
+            json_schema: {
+              ref: "#/definitions/rpcStatus";
+            };
+          };
+        };
+      };
+    };
+  }
+}
+
+
+//This is an empty request
+message HealthzRequest {}
+
+//This is an empty response
+message HealthzResponse {}
+
+message ListInstancesRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      description: "Search query for lists";
+      required: ["query"]
+    };
+  };
+
+  //list limitations and ordering
+  zitadel.v1.ListQuery query = 1;
+  // the field the result is sorted
+  zitadel.instance.v1.FieldName sorting_column = 2;
+  //criterias the client is looking for
+  repeated zitadel.instance.v1.Query queries = 3;
+}
+
+message ListInstancesResponse {
+  zitadel.v1.ListDetails details = 1;
+  zitadel.instance.v1.FieldName sorting_column = 2;
+  repeated zitadel.instance.v1.Instance result = 3;
+}
+
+message GetInstanceRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message GetInstanceResponse {
+  zitadel.instance.v1.InstanceDetail instance = 1;
+}
+
+message AddInstanceRequest {
+  message Profile {
+    string first_name = 1 [(validate.rules).string = {max_len: 200}];
+    string last_name = 2 [(validate.rules).string = {max_len: 200}];
+    string preferred_language = 5 [(validate.rules).string = {max_len: 10}];
+  }
+  message Email {
+    string email = 1[(validate.rules).string = {min_len: 1, max_len: 200}];
+    bool is_email_verified = 2;
+  }
+  message Password {
+    string password = 1 [(validate.rules).string = {max_len: 200}];
+    bool password_change_required = 2;
+  }
+
+  string instance_name = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string first_org_name = 2 [(validate.rules).string = {max_len: 200}];
+  string custom_domain = 3 [(validate.rules).string = {max_len: 200}];
+  string owner_user_name = 4 [(validate.rules).string = {max_len: 200}];
+  Email owner_email = 5 [(validate.rules).message.required = true];
+  Profile owner_profile = 6 [(validate.rules).message.required = false];
+  Password owner_password = 7 [(validate.rules).message.required = false];
+  string default_language = 8 [(validate.rules).string = {max_len: 10}];
+}
+
+message AddInstanceResponse {
+  string instance_id = 1;
+  zitadel.v1.ObjectDetails details = 2;
+}
+
+message CreateInstanceRequest {
+  message Profile {
+    string first_name = 1 [(validate.rules).string = {max_len: 200}];
+    string last_name = 2 [(validate.rules).string = {max_len: 200}];
+    string preferred_language = 3 [(validate.rules).string = {max_len: 10}];
+  }
+  message Email {
+    string email = 1[(validate.rules).string = {min_len: 1, max_len: 200, email: true}];
+    bool is_email_verified = 2;
+  }
+  message Password {
+    string password = 1 [(validate.rules).string = {max_len: 200}];
+    bool password_change_required = 2;
+  }
+  message Human {
+    string user_name = 1 [(validate.rules).string = {max_len: 200}];
+    Email email = 2 [(validate.rules).message.required = true];
+    Profile profile = 3 [(validate.rules).message.required = false];
+    Password password = 4 [(validate.rules).message.required = false];
+  }
+  message PersonalAccessToken {
+    google.protobuf.Timestamp expiration_date = 1 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"2519-04-01T08:45:00.000000Z\"";
+        description: "The date the token will expire and no logins will be possible";
+      }
+    ];
+  }
+  message MachineKey {
+    zitadel.authn.v1.KeyType type = 1 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+    google.protobuf.Timestamp expiration_date = 2 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        example: "\"2519-04-01T08:45:00.000000Z\"";
+        description: "The date the key will expire and no logins will be possible";
+      }
+    ];
+  }
+  message Machine {
+    string user_name = 1 [(validate.rules).string = {max_len: 200}];
+    string name = 2 [(validate.rules).string = {max_len: 200}];
+    PersonalAccessToken personal_access_token = 3;
+    MachineKey machine_key = 4;
+  }
+
+  string instance_name = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string first_org_name = 2 [(validate.rules).string = {max_len: 200}];
+  string custom_domain = 3 [(validate.rules).string = {max_len: 200}];
+
+  oneof owner {
+    option (validate.required) = true;
+
+    // oneof field for the user managing the instance
+    Human human = 4;
+    Machine machine = 5;
+  }
+
+  string default_language = 6 [(validate.rules).string = {max_len: 10}];
+}
+
+message CreateInstanceResponse {
+  string instance_id = 1;
+  zitadel.v1.ObjectDetails details = 2;
+  string pat = 3;
+  bytes machine_key = 4;
+}
+
+message UpdateInstanceRequest{
+  string instance_id = 1;
+  string instance_name = 2 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message UpdateInstanceResponse{
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message RemoveInstanceRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message RemoveInstanceResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message ListIAMMembersRequest {
+  zitadel.v1.ListQuery query = 1;
+  string instance_id = 2;
+  repeated zitadel.member.v1.SearchQuery queries = 3;
+}
+
+message ListIAMMembersResponse {
+  zitadel.v1.ListDetails details = 1;
+  repeated zitadel.member.v1.Member result = 2;
+}
+
+message GetUsageRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message AddQuotaRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  // the unit a quota should be imposed on
+  zitadel.quota.v1.Unit unit = 2 [
+    (validate.rules).enum = {defined_only: true, not_in: [0]},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        description: "the unit a quota should be imposed on";
+    }
+  ];
+  // the starting time from which the current quota period is calculated from. This is relevant for querying the current usage.
+  google.protobuf.Timestamp from = 3 [
+      (validate.rules).timestamp.required = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          example: "\"2019-04-01T08:45:00.000000Z\"";
+          description: "the starting time from which the current quota period is calculated from. This is relevant for querying the current usage.";
+      }
+  ];
+  // the quota periods duration
+  google.protobuf.Duration reset_interval = 4 [
+    (validate.rules).duration.required = true,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "the quota periods duration";
+      }
+  ];
+  // the quota amount of units
+  uint64 amount = 5 [
+    (validate.rules).uint64.gt = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "the quota amount of units";
+    }
+  ];
+  // whether ZITADEL should block further usage when the configured amount is used
+  bool limit = 6 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "whether ZITADEL should block further usage when the configured amount is used";
+    }
+  ];
+  // the handlers, ZITADEL executes when certain quota percentages are reached
+  repeated zitadel.quota.v1.Notification notifications = 7 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+          description: "the handlers, ZITADEL executes when certain quota percentages are reached";
+    }
+  ];
+}
+
+message AddQuotaResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message SetQuotaRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  // the unit a quota should be imposed on
+  zitadel.quota.v1.Unit unit = 2 [
+    (validate.rules).enum = {defined_only: true, not_in: [0]},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "the unit a quota should be imposed on";
+    }
+  ];
+  // the starting time from which the current quota period is calculated from. This is relevant for querying the current usage.
+  google.protobuf.Timestamp from = 3 [
+    (validate.rules).timestamp.required = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"2019-04-01T08:45:00.000000Z\"";
+      description: "the starting time from which the current quota period is calculated from. This is relevant for querying the current usage.";
+    }
+  ];
+  // the quota periods duration
+  google.protobuf.Duration reset_interval = 4 [
+    (validate.rules).duration.required = true,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "the quota periods duration";
+    }
+  ];
+  // the quota amount of units
+  uint64 amount = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "the quota amount of units";
+    }
+  ];
+  // whether ZITADEL should block further usage when the configured amount is used
+  bool limit = 6 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "whether ZITADEL should block further usage when the configured amount is used";
+    }
+  ];
+  // the handlers, ZITADEL executes when certain quota percentages are reached
+  repeated zitadel.quota.v1.Notification notifications = 7 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "the handlers, ZITADEL executes when certain quota percentages are reached";
+    }
+  ];
+}
+
+message SetQuotaResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message RemoveQuotaRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  zitadel.quota.v1.Unit unit = 2;
+}
+
+message RemoveQuotaResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message SetLimitsRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  google.protobuf.Duration audit_log_retention = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "auditLogRetention limits the number of events that can be queried via the events API by their age. A value of '0s' means that all events are available. If this value is set, it overwrites the system default.";
+    }
+  ];
+  optional bool block = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "if block is true, requests are responded with a resource exhausted error code.";
+    }
+  ];
+}
+
+
+message SetLimitsResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message BulkSetLimitsRequest {
+  repeated SetLimitsRequest limits = 1;
+}
+
+message BulkSetLimitsResponse {
+  zitadel.v1.ObjectDetails details = 1;
+  repeated zitadel.v1.ObjectDetails target_details = 2;
+}
+
+message ResetLimitsRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message ResetLimitsResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message ExistsDomainRequest {
+  string domain = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message ExistsDomainResponse {
+  bool exists = 1;
+}
+
+message ListDomainsRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];//list limitations and ordering
+  zitadel.v1.ListQuery query = 2;
+  // the field the result is sorted
+  zitadel.instance.v1.DomainFieldName sorting_column = 3;
+  //criterias the client is looking for
+  repeated zitadel.instance.v1.DomainSearchQuery queries = 4;
+}
+
+message ListDomainsResponse {
+  zitadel.v1.ListDetails details = 1;
+  zitadel.instance.v1.DomainFieldName sorting_column = 2;
+  repeated zitadel.instance.v1.Domain result = 3;
+}
+
+message AddDomainRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string domain = 2 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message AddDomainResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message RemoveDomainRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string domain = 2 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message RemoveDomainResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message SetPrimaryDomainRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string domain = 2 [(validate.rules).string = {min_len: 1, max_len: 200}];
+}
+
+message SetPrimaryDomainResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+message ChangeSubscriptionRequest {
+  string domain = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  string subscription_name = 2 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  uint64 request_limit = 3;
+  uint64 action_mins_limit = 4;
+}
+
+message ChangeSubscriptionResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}
+
+//This is an empty request
+message ListViewsRequest {}
+
+message ListViewsResponse {
+  //TODO: list details
+  repeated View result = 1;
+}
+
+message ClearViewRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["database", "view_name"]
+    };
+  };
+
+  string database = 1 [
+    (validate.rules).string = {min_len: 1, max_len: 200},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"adminapi\"";
+      min_length: 1;
+      max_length: 200;
+    }
+  ];
+  string view_name = 2 [
+    (validate.rules).string = {min_len: 1, max_len: 200},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"iam_members\"";
+      min_length: 1;
+      max_length: 200;
+    }
+  ];
+}
+
+//This is an empty response
+message ClearViewResponse {}
+
+//This is an empty request
+message ListFailedEventsRequest {}
+
+message ListFailedEventsResponse {
+  //TODO: list details
+  repeated FailedEvent result = 1;
+}
+
+message RemoveFailedEventRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      required: ["database", "view_name", "failed_sequence"]
+    };
+  };
+
+  string database = 1 [
+    (validate.rules).string = {min_len: 1, max_len: 200},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"adminapi\"";
+      min_length: 1;
+      max_length: 200;
+    }
+  ];
+  string view_name = 2 [
+    (validate.rules).string = {min_len: 1, max_len: 200},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"iam_members\"";
+      min_length: 1;
+      max_length: 200;
+    }
+  ];
+  uint64 failed_sequence = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"9823758\"";
+    }
+  ];
+  string instance_id = 4  [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"840498034930840\"";
+    }
+  ];
+}
+
+//This is an empty response
+message RemoveFailedEventResponse {}
+
+message View {
+  string database = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"adminapi\"";
+    }
+  ];
+  string view_name = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"iam_members\"";
+    }
+  ];
+  uint64 processed_sequence = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"9823758\"";
+    }
+  ];
+  google.protobuf.Timestamp event_timestamp = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"2019-04-01T08:45:00.000000Z\"";
+      description: "The timestamp the event occured";
+    }
+  ]; // The timestamp the event occured
+  google.protobuf.Timestamp last_successful_spooler_run = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "The timestamp the event occured";
+    }
+  ];
+  string instance = 6  [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"840498034930840\"";
+    }
+  ];
+}
+
+message FailedEvent {
+  string database = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"adminapi\"";
+    }
+  ];
+  string view_name = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"iam_members\"";
+    }
+  ];
+  uint64 failed_sequence = 3 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"9823759\"";
+    }
+  ];
+  uint64 failure_count = 4 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"5\"";
+    }
+  ];
+  string error_message = 5 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      example: "\"ID=EXAMP-ID3ER Message=Example message\"";
+    }
+  ];
+  google.protobuf.Timestamp last_failed = 6 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      description: "The timestamp the failure last occurred";
+    }
+  ];
+}
+
+message SetInstanceFeatureRequest {
+  string instance_id = 1 [(validate.rules).string = {min_len: 1, max_len: 200}];
+  zitadel.feature.v1.InstanceFeature feature_id = 2 [(validate.rules).enum = {not_in: 0, defined_only: true}];
+  // value based on the feature type
+  oneof value {
+    option (validate.required) = true;
+
+    bool bool = 3;
+  }
+}
+
+message SetInstanceFeatureResponse {
+  zitadel.v1.ObjectDetails details = 1;
+}

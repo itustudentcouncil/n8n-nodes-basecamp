@@ -1,0 +1,19 @@
+version: v2
+inputs:
+  - directory: .
+  - git_repo: https://github.com/grpc-ecosystem/grpc-gateway.git
+  - git_repo: https://github.com/googleapis/googleapis.git
+  - git_repo: https://github.com/envoyproxy/protoc-gen-validate.git
+plugins:
+  - local: node_modules/ts-proto/protoc-gen-ts_proto
+    strategy: all
+    out: src/api/generated
+    opt:
+      - oneOf=unions
+      - forceLong=long
+      - esModuleInterop=true
+      - env=node
+      - outputServices=nice-grpc
+      - outputServices=generic-definitions
+      - useExactTypes=false
+      - importSuffix=.js

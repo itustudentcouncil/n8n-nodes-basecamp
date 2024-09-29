@@ -1,13 +1,24 @@
 {
   "name": "@itustudentcouncil/n8n-nodes-basecamp",
   "description": "Connect n8n to Basecamp 4",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "author": "Viktor Shamal Andersen",
   "license": "MIT",
-  "keywords": ["n8n-community-node-package"],
+  "keywords": [
+    "n8n-community-node-package"
+  ],
   "n8n": {
     "n8nNodesApiVersion": 1,
-    "nodes": ["Basecamp.node.js", "FormTrigger.node.js"]
+    "nodes": [
+      "Basecamp.node.js",
+      "FormTrigger.node.js",
+      "Zitadel.node.js",
+      "Payhawk.node.js"
+    ],
+    "credentials": [
+      "Zitadel.credentials.ts",
+      "Payhawk.credentials.ts"
+    ]
   },
   "prettier": {
     "semi": false,
@@ -16,6 +27,7 @@
   },
   "main": "Basecamp.node.js",
   "devDependencies": {
+    "@types/lodash": "^4.17.9",
     "n8n-core": "*",
     "n8n-workflow": "*"
   },
@@ -26,5 +38,10 @@
   },
   "bugs": {
     "url": "https://github.com/itustudentcouncil/n8n-nodes-basecamp/issues"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.1.0",
+    "@devlikeapro/n8n-openapi-node": "^0.1.0",
+    "nice-grpc": "^2.1.10"
   }
 }
