@@ -1,7 +1,7 @@
 {
   "name": "@itustudentcouncil/n8n-nodes-basecamp",
   "description": "Connect n8n to Basecamp 4",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "author": "Viktor Shamal Andersen",
   "license": "MIT",
   "keywords": [
@@ -12,12 +12,12 @@
     "nodes": [
       "Basecamp.node.js",
       "FormTrigger.node.js",
-      "Zitadel.node.js",
-      "Payhawk.node.js"
+      "dist/Zitadel.node.js",
+      "dist/Payhawk.node.js"
     ],
     "credentials": [
-      "Zitadel.credentials.ts",
-      "Payhawk.credentials.ts"
+      "dist/Zitadel.credentials.ts",
+      "dist/Payhawk.credentials.ts"
     ]
   },
   "prettier": {
