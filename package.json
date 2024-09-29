@@ -11,11 +11,9 @@
     "n8nNodesApiVersion": 1,
     "nodes": [
       "nodes/basecamp/Basecamp.node.js",
-      "nodes/zitadel/Zitadel.node.js",
       "nodes/payhawk/Payhawk.node.js"
     ],
     "credentials": [
-      "credentials/Zitadel.credentials.js",
       "credentials/Payhawk.credentials.js"
     ]
   },
