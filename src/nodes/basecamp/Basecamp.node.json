@@ -1,6 +1,6 @@
 {
 	"node": "n8n-nodes-base.basecamp",
-	"nodeVersion": "1.0",
-	"codexVersion": "1.0",
+	"nodeVersion": "1.1",
+	"codexVersion": "1.1",
 	"categories": ["Development", "Developer Tools"]
 }
