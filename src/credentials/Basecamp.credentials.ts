@@ -5,7 +5,7 @@ export class Basecamp implements ICredentialType {
 
   extends = ["oAuth2Api"]
 
-  displayName = "Raindrop OAuth2 API"
+  displayName = "Basecamp API"
 
   documentationUrl = "raindrop"
 

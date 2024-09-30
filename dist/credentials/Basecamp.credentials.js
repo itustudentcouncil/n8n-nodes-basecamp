@@ -5,7 +5,7 @@ class Basecamp {
     constructor() {
         this.name = "basecampOAuth2Api";
         this.extends = ["oAuth2Api"];
-        this.displayName = "Raindrop OAuth2 API";
+        this.displayName = "Basecamp API";
         this.documentationUrl = "raindrop";
         this.properties = [
             {

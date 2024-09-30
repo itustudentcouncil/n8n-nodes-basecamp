@@ -38,7 +38,7 @@ export class Basecamp implements INodeType {
     name,
     displayName,
     icon: `file:${displayName}.svg`,
-    description: "Interact with the Basecamp API",
+    description: "Interact with the Basecamp API ",
 
     defaults: { name: displayName },
     properties,
