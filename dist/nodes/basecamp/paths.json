@@ -1,49 +1,49 @@
 {
     "/people.json": {
-        "get": {
-            "tags": ["People"],
-            "summary": "Get all people",
-            "description": "Returns all people visible to the current user.",
-            "operationId": "getAllPeople",
-            "produces": ["application/json"],
-            "responses": {
-                "200": {
-                    "description": "An array of people",
-                    "schema": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/definitions/Person"
-                        }
-                    }
-                }
+      "get": {
+        "tags": ["People"],
+        "summary": "Get all people",
+        "description": "Returns all people visible to the current user.",
+        "operationId": "getAllPeople",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "An array of people",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Person"
+              }
             }
+          }
         }
+      }
     },
     "/projects/{projectId}/people.json": {
-        "get": {
-            "tags": ["People"],
-            "summary": "Get people on a project",
-            "description": "Returns all active people on the project with the given ID.",
-            "operationId": "getPeopleOnProject",
-            "parameters": [
-                {
-                    "name": "projectId",
-                    "in": "path",
-                    "required": true,
-                    "type": "integer"
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "An array of people on the project",
-                    "schema": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/definitions/Person"
-                        }
-                    }
-                }
+      "get": {
+        "tags": ["People"],
+        "summary": "Get people on a project",
+        "description": "Returns all active people on the project with the given ID.",
+        "operationId": "getPeopleOnProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of people on the project",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Person"
+              }
             }
+          }
         }
+      }
     }
-}
+  }

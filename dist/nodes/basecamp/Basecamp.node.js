@@ -47,7 +47,7 @@ class Basecamp {
             name,
             displayName,
             icon: `file:${displayName}.svg`,
-            description: "Interact with the Basecamp API ",
+            description: "Interact with the Basecamp API",
             defaults: { name: displayName },
             properties,
             credentials: [
