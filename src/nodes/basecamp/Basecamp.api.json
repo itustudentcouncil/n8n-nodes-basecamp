@@ -1,10 +1,1144 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0.0",
-      "title": "Basecamp API",
-      "description": "API Documentation for Basecamp"
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Basecamp API",
+    "description": "API Documentation for Basecamp",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://3.basecampapi.com/"
+    }
+  ],
+  "paths": {
+    "/buckets/{bucketId}/card_tables/{cardTableId}.json": {
+      "get": {
+        "tags": ["Card Tables"],
+        "summary": "Get a card table",
+        "operationId": "getCardTable",
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the project bucket",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "cardTableId",
+            "in": "path",
+            "required": true,
+            "description": "ID of the card table",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardTable"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Card table not found"
+          }
+        }
+      }
     },
-    "host": "3.basecampapi.com",
-    "schemes": ["https"]
-  }
+    "/buckets/{bucket_id}/inboxes/{inbox_id}/forwards": {
+      "get": {
+        "summary": "Get forwards",
+        "description": "Returns a paginated list of active forwards in the project with the specified bucket ID and inbox ID.",
+        "tags": ["Forwards"],
+        "operationId": "getForwards",
+        "parameters": [
+          {
+            "name": "bucket_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the bucket (project).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "inbox_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the inbox.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of active forwards",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ForwardList" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buckets/{bucket_id}/inbox_forwards/{forward_id}": {
+      "get": {
+        "summary": "Get a forward",
+        "description": "Returns the forward with the specified ID in the project with the specified bucket ID.",
+        "tags": ["Forwards"],
+        "operationId": "getForward",
+        "parameters": [
+          {
+            "name": "bucket_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the bucket (project).",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "forward_id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the forward.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of a specific forward",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Forward" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buckets/{bucket_id}/recordings/{recording_id}/events.json": {
+      "get": {
+        "summary": "Get events",
+        "description": "Returns a paginated list of events for the recording with the specified ID in the project with the specified bucket ID.",
+        "tags": ["Events"],
+        "operationId": "getEvents",
+        "parameters": [
+          {
+            "name": "bucket_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the project bucket",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "recording_id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the recording",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of events",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "recording_id": {
+                        "type": "integer"
+                      },
+                      "action": {
+                        "type": "string"
+                      },
+                      "details": {
+                        "type": "object"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                      },
+                      "creator": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer"
+                          },
+                          "attachable_sgid": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "email_address": {
+                            "type": "string"
+                          },
+                          "personable_type": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "bio": {
+                            "type": "string"
+                          },
+                          "location": {
+                            "type": ["string", "null"]
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "updated_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "admin": {
+                            "type": "boolean"
+                          },
+                          "owner": {
+                            "type": "boolean"
+                          },
+                          "client": {
+                            "type": "boolean"
+                          },
+                          "employee": {
+                            "type": "boolean"
+                          },
+                          "time_zone": {
+                            "type": "string"
+                          },
+                          "avatar_url": {
+                            "type": "string"
+                          },
+                          "company": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            }
+                          },
+                          "can_manage_projects": {
+                            "type": "boolean"
+                          },
+                          "can_manage_people": {
+                            "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1071915175,
+                    "recording_id": 1069479523,
+                    "action": "assignment_changed",
+                    "details": {
+                      "added_person_ids": [1049715937],
+                      "removed_person_ids": []
+                    },
+                    "created_at": "2022-12-11T13:25:58.169Z",
+                    "creator": {
+                      "id": 1049715915,
+                      "attachable_sgid": "BAh7CEkiCGdpZAY6BkVUSSIrZ2lkOi8vYmMzL1BlcnNvbi8xMDQ5NzE1OTE1P2V4cGlyZXNfaW4GOwBUSSIMcHVycG9zZQY7AFRJIg9hdHRhY2hhYmxlBjsAVEkiD2V4cGlyZXNfYXQGOwBUMA==--aeb392ebf54ffd820e45f27add22bae3a8c7da56",
+                      "name": "Annie Bryan",
+                      "email_address": "annie@honchodesign.com",
+                      "personable_type": "User",
+                      "title": "Central Markets Manager",
+                      "bio": "To open a store is easy, to keep it open is an art",
+                      "location": null,
+                      "created_at": "2022-11-22T08:23:21.911Z",
+                      "updated_at": "2022-11-22T08:23:21.911Z",
+                      "admin": false,
+                      "owner": false,
+                      "client": false,
+                      "employee": true,
+                      "time_zone": "America/Chicago",
+                      "avatar_url": "https://3.basecamp-static.com/195539477/people/BAhpBMtkkT4=--9927c47a4cbee30a7f9aea667882496aba799149/avatar?v=1",
+                      "company": {
+                        "id": 1033447817,
+                        "name": "Honcho Design"
+                      },
+                      "can_manage_projects": true,
+                      "can_manage_people": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/recordings.json": {
+      "get": {
+        "summary": "Get recordings",
+        "description": "Returns a paginated list of records for the given type of recording.",
+        "operationId": "getRecordings",
+        "tags": ["Recordings"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "Comment",
+                "Document",
+                "Message",
+                "Question::Answer",
+                "Schedule::Entry",
+                "Todo",
+                "Todolist",
+                "Upload",
+                "Vault"
+              ]
+            },
+            "description": "Type of recording."
+          },
+          {
+            "name": "bucket",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "description": "Single or comma-separated list of project IDs."
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["active", "archived", "trashed"],
+              "default": "active"
+            },
+            "description": "Status of the recordings."
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["created_at", "updated_at"],
+              "default": "created_at"
+            },
+            "description": "Field to sort by."
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "desc"
+            },
+            "description": "Sort direction."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of recordings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recording"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/buckets/{bucketId}/recordings/{recordingId}/status/trashed.json": {
+      "put": {
+        "summary": "Trash a recording",
+        "description": "Marks the specified recording as trashed.",
+        "operationId": "trashRecording",
+        "tags": ["Recordings"],
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the project bucket."
+          },
+          {
+            "name": "recordingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the recording to trash."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. The recording was successfully trashed."
+          }
+        }
+      }
+    },
+    "/buckets/{bucketId}/recordings/{recordingId}/status/archived.json": {
+      "put": {
+        "summary": "Archive a recording",
+        "description": "Marks the specified recording as archived.",
+        "operationId": "archiveRecording",
+        "tags": ["Recordings"],
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the project bucket."
+          },
+          {
+            "name": "recordingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the recording to archive."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. The recording was successfully archived."
+          }
+        }
+      }
+    },
+    "/buckets/{bucketId}/recordings/{recordingId}/status/active.json": {
+      "put": {
+        "summary": "Unarchive a recording",
+        "description": "Marks the specified recording as active.",
+        "operationId": "unarchiveRecording",
+        "tags": ["Recordings"],
+        "parameters": [
+          {
+            "name": "bucketId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the project bucket."
+          },
+          {
+            "name": "recordingId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the recording to unarchive."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content. The recording was successfully marked as active."
+          }
+        }
+      }
+    },
+    "/projects.json": {
+      "get": {
+        "summary": "Get all projects",
+        "operationId": "getAllProjects",
+        "description": "Returns a paginated list of active projects visible to the current user.",
+        "tags": ["Projects"],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Filter projects by status: `active`, `archived`, or `trashed`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of projects.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a project",
+        "operationId": "createProject",
+        "description": "Create a new project with a name and optional description.",
+        "tags": ["Projects"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProject"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The created project.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          },
+          "507": {
+            "description": "The project limit for this account has been reached."
+          }
+        }
+      }
+    },
+    "/projects/{projectId}.json": {
+      "get": {
+        "summary": "Get a project",
+        "operationId": "getProject",
+        "description": "Returns a specific project by ID.",
+        "tags": ["Projects"],
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The project.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/people.json": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Get all people",
+        "description": "Returns all people visible to the current user.",
+        "operationId": "getAllPeople",
+        "responses": {
+          "200": {
+            "description": "An array of people",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/people.json": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Get people on a project",
+        "description": "Returns all active people on the project with the given ID.",
+        "operationId": "getPeopleOnProject",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An array of people on the project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{projectId}/people/users.json": {
+      "put": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Update who can access a project",
+        "description": "Grants and revokes people access to a project, or creates new users.",
+        "operationId": "updateProjectAccess",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "People access update payload",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PeopleAccessUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "A response showing granted and revoked people",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PeopleAccessResponse"
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/circles/people.json": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Get pingable people",
+        "description": "Returns all people on this Basecamp account who can be pinged.",
+        "operationId": "getPingablePeople",
+        "responses": {
+          "200": {
+            "description": "An array of pingable people",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Person"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/people/{personId}.json": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Get person",
+        "description": "Returns the profile for the person with the given ID.",
+        "operationId": "getPerson",
+        "parameters": [
+          {
+            "name": "personId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A person's profile",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/my/profile.json": {
+      "get": {
+        "tags": [
+          "People"
+        ],
+        "summary": "Get my personal info",
+        "description": "Returns the current user's personal information.",
+        "operationId": "getMyProfile",
+        "responses": {
+          "200": {
+            "description": "Current user's profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Person"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CardTable": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "visible_to_clients": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "title": {
+            "type": "string"
+          },
+          "inherits_status": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "app_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "bookmark_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "subscription_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "bucket": {
+            "$ref": "#/components/schemas/Bucket"
+          },
+          "creator": {
+            "$ref": "#/components/schemas/Creator"
+          },
+          "subscribers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Subscriber"
+            }
+          },
+          "lists": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/List"
+            }
+          }
+        }
+      },
+      "Forward": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "status": { "type": "string" },
+          "visible_to_clients": { "type": "boolean" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" },
+          "title": { "type": "string" },
+          "inherits_status": { "type": "boolean" },
+          "type": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "app_url": { "type": "string", "format": "uri" },
+          "bookmark_url": { "type": "string", "format": "uri" },
+          "subscription_url": { "type": "string", "format": "uri" },
+          "parent": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "title": { "type": "string" },
+              "type": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
+              "app_url": { "type": "string", "format": "uri" }
+            }
+          },
+          "bucket": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "name": { "type": "string" },
+              "type": { "type": "string" }
+            }
+          },
+          "creator": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "attachable_sgid": { "type": "string" },
+              "name": { "type": "string" },
+              "email_address": { "type": "string" },
+              "personable_type": { "type": "string" },
+              "title": { "type": "string" },
+              "bio": { "type": "string" },
+              "location": { "type": "string", "nullable": true },
+              "created_at": { "type": "string", "format": "date-time" },
+              "updated_at": { "type": "string", "format": "date-time" },
+              "admin": { "type": "boolean" },
+              "owner": { "type": "boolean" },
+              "client": { "type": "boolean" },
+              "employee": { "type": "boolean" },
+              "time_zone": { "type": "string" },
+              "avatar_url": { "type": "string", "format": "uri" },
+              "company": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "name": { "type": "string" }
+                }
+              },
+              "can_manage_projects": { "type": "boolean" },
+              "can_manage_people": { "type": "boolean" }
+            }
+          },
+          "content": { "type": "string" },
+          "subject": { "type": "string" },
+          "from": { "type": "string" },
+          "replies_count": { "type": "integer" },
+          "replies_url": { "type": "string", "format": "uri" }
+        }
+      },
+      "ForwardList": {
+        "type": "array",
+        "items": { "$ref": "#/components/schemas/Forward" }
+      },
+      "Recording": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the recording."
+          },
+          "type": {
+            "type": "string",
+            "description": "Type of the recording."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the recording was created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the recording was last updated."
+          },
+          "content": {
+            "type": "string",
+            "description": "The content of the recording."
+          }
+        },
+        "required": ["id", "type", "createdAt", "updatedAt", "content"]
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the project."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the project."
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the project."
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the project.",
+            "enum": ["active", "archived", "trashed"]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the project was created."
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Timestamp when the project was last updated."
+          }
+        },
+        "required": ["id", "name", "status", "createdAt", "updatedAt"]
+      },
+      "CreateProject": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the new project.",
+            "example": "New Project"
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional description of the new project."
+          }
+        },
+        "required": ["name"]
+      }
+    ,
+      "Person": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the person"
+          },
+          "attachable_sgid": {
+            "type": "string",
+            "description": "A secure global ID for the person"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the person"
+          },
+          "email_address": {
+            "type": "string",
+            "description": "Email address of the person"
+          },
+          "personable_type": {
+            "type": "string",
+            "description": "Type of the person (e.g., User, Client)"
+          },
+          "title": {
+            "type": "string",
+            "description": "Job title of the person"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Short biography of the person"
+          },
+          "location": {
+            "type": "string",
+            "description": "Location of the person"
+          },
+          "created_at": {
+            "type": "string",
+            "description": "Timestamp of when the person was created",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "description": "Timestamp of when the person was last updated",
+            "format": "date-time"
+          },
+          "admin": {
+            "type": "boolean",
+            "description": "Indicates if the person is an admin"
+          },
+          "owner": {
+            "type": "boolean",
+            "description": "Indicates if the person is the owner"
+          },
+          "client": {
+            "type": "boolean",
+            "description": "Indicates if the person is a client"
+          },
+          "employee": {
+            "type": "boolean",
+            "description": "Indicates if the person is an employee"
+          },
+          "time_zone": {
+            "type": "string",
+            "description": "Person's time zone"
+          },
+          "avatar_url": {
+            "type": "string",
+            "description": "URL to the person's avatar image"
+          },
+          "company": {
+            "$ref": "#/components/schemas/Company"
+          },
+          "can_manage_projects": {
+            "type": "boolean",
+            "description": "Indicates if the person can manage projects"
+          },
+          "can_manage_people": {
+            "type": "boolean",
+            "description": "Indicates if the person can manage people"
+          }
+        }
+      },
+      "Company": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the company"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the company"
+          }
+        }
+      },
+      "PeopleAccessUpdate": {
+        "type": "object",
+        "properties": {
+          "grant": {
+            "type": "array",
+            "description": "Array of people IDs to be granted access",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "revoke": {
+            "type": "array",
+            "description": "Array of people IDs to be revoked access",
+            "items": {
+              "type": "integer"
+            }
+          },
+          "create": {
+            "type": "array",
+            "description": "Array of new people to be created",
+            "items": {
+              "$ref": "#/components/schemas/NewPerson"
+            }
+          }
+        }
+      },
+      "NewPerson": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the new person"
+          },
+          "email_address": {
+            "type": "string",
+            "description": "Email address of the new person"
+          },
+          "title": {
+            "type": "string",
+            "description": "Job title of the new person (optional)"
+          },
+          "company_name": {
+            "type": "string",
+            "description": "Company name of the new person (optional)"
+          }
+        }
+      },
+      "PeopleAccessResponse": {
+        "type": "object",
+        "properties": {
+          "granted": {
+            "type": "array",
+            "description": "Array of people who were granted access",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            }
+          },
+          "revoked": {
+            "type": "array",
+            "description": "Array of people who were revoked access",
+            "items": {
+              "$ref": "#/components/schemas/Person"
+            }
+          }
+        }
+      }
+    }
+  },
+  "x-original-swagger-version": "2.0"
+}

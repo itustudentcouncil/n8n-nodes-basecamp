@@ -26,18 +26,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Basecamp = void 0;
 const n8n_openapi_node_1 = require("@devlikeapro/n8n-openapi-node");
 const doc = __importStar(require("./Basecamp.api.json"));
-const paths = __importStar(require("./paths.json"));
-const definitions = __importStar(require("./definitions.json"));
-let json = { ...doc, paths, definitions };
-for (const path in json.paths) {
-    const methods = json.paths[path];
-    for (const method in methods) {
-        const operation = methods[method];
-        operation.operationId = operation.summary;
-    }
-}
-const config = {};
-const parser = new n8n_openapi_node_1.N8NPropertiesBuilder(json, config);
+const parser = new n8n_openapi_node_1.N8NPropertiesBuilder(doc, {});
 const properties = parser.build();
 const name = "basecamp";
 const displayName = "Basecamp";
