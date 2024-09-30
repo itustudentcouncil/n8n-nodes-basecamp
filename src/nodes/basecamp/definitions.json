@@ -1,0 +1,131 @@
+{
+    "Person": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "attachable_sgid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email_address": {
+          "type": "string"
+        },
+        "personable_type": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "bio": {
+          "type": "string"
+        },
+        "location": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "admin": {
+          "type": "boolean"
+        },
+        "owner": {
+          "type": "boolean"
+        },
+        "client": {
+          "type": "boolean"
+        },
+        "employee": {
+          "type": "boolean"
+        },
+        "time_zone": {
+          "type": "string"
+        },
+        "avatar_url": {
+          "type": "string"
+        },
+        "company": {
+          "$ref": "#/definitions/Company"
+        },
+        "can_manage_projects": {
+          "type": "boolean"
+        },
+        "can_manage_people": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Company": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "UpdateProjectPeople": {
+      "type": "object",
+      "properties": {
+        "grant": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "revoke": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "create": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "email_address": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "company_name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ProjectPeopleResponse": {
+      "type": "object",
+      "properties": {
+        "granted": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Person"
+          }
+        },
+        "revoked": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Person"
+          }
+        }
+      }
+    }
+  }

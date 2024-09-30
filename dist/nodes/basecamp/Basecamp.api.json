@@ -1,0 +1,10 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Basecamp API",
+        "description": "API Documentation for Basecamp"
+    },
+    "host": "3.basecampapi.com",
+    "schemes": ["https"]
+}

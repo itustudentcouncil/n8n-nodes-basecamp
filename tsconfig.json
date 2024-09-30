@@ -21,6 +21,6 @@
 		"outDir": "./dist/",
 	},
 	"include": [
-		"src/nodes/**/*.ts", "src/credentials",
+		"src/nodes/**/**/*.ts", "src/credentials/**/*.ts"
 	],
 }
