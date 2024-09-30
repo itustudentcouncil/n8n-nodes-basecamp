@@ -17,6 +17,11 @@ export declare class Zitadel implements INodeType {
                 name: string;
                 value: string;
             }[];
+            displayOptions: {
+                show: {
+                    service: ("UserService" | "AuthService")[];
+                };
+            };
             default: string;
             required: boolean;
         } | {
@@ -35,10 +40,10 @@ export declare class Zitadel implements INodeType {
             name: string;
             type: "options";
             options: {
-                name: string;
-                value: string;
+                name: "UserService" | "AuthService";
+                value: "UserService" | "AuthService";
             }[];
-            default: string;
+            default: "UserService" | "AuthService";
             noDataExpression: boolean;
             required: boolean;
             description: string;

@@ -7,10 +7,11 @@ const nice_grpc_1 = require("nice-grpc");
 const name = "zitadel";
 const displayName = "Zitadel";
 const apiEndpoint = "https://zitadel.studentcouncil.dk";
-const clients = {
-    userservice: user_service_1.UserServiceDefinition,
-    authservice: auth_1.AuthServiceDefinition
-};
+const services = [user_service_1.UserServiceDefinition, auth_1.AuthServiceDefinition];
+const clients = services.reduce((acc, service) => {
+    acc[service.name] = service;
+    return acc;
+}, {});
 function createClient(definition, apiEndpoint, ...interceptors) {
     const channel = (0, nice_grpc_1.createChannel)(apiEndpoint);
     let factory = (0, nice_grpc_1.createClientFactory)();
@@ -28,7 +29,6 @@ const createAccessTokenInterceptor = (token) => async function* (call, options) 
     return yield* call.next(call.request, options);
 };
 exports.createAccessTokenInterceptor = createAccessTokenInterceptor;
-const getUser = user_service_1.UserServiceDefinition.methods.getUserByID.requestType.fromPartial({});
 const createOperations = (service) => ({
     displayName: "Operation",
     name: "operation",
@@ -37,6 +37,11 @@ const createOperations = (service) => ({
         name,
         value: name
     })),
+    displayOptions: {
+        show: {
+            service: [service.name]
+        }
+    },
     default: "userservice",
     required: true
 });
@@ -63,6 +68,8 @@ const createOperationProperties = (service) => {
     }
     return properties;
 };
+const allOperations = Object.values(clients).map((service) => createOperations(service));
+const allOperationProperties = Object.values(clients).map((service) => createOperationProperties(service));
 class Zitadel {
     constructor() {
         this.description = {
@@ -76,19 +83,17 @@ class Zitadel {
                     displayName: "Service",
                     name: "service",
                     type: "options",
-                    options: [
-                        {
-                            name: "UserService",
-                            value: "userservice"
-                        }
-                    ],
-                    default: "userservice",
+                    options: Object.values(clients).map((client) => ({
+                        name: client.name,
+                        value: client.name
+                    })),
+                    default: Object.values(clients)[0].name,
                     noDataExpression: true,
                     required: true,
                     description: "Create a new contact"
                 },
-                createOperations(user_service_1.UserServiceDefinition),
-                ...createOperationProperties(user_service_1.UserServiceDefinition)
+                ...allOperations.flat(),
+                ...allOperationProperties.flat()
             ],
             credentials: [
                 {
@@ -106,9 +111,25 @@ class Zitadel {
     async execute() {
         const credentials = await this.getCredentials("zitadel");
         const personalAccessToken = (0, exports.createAccessTokenInterceptor)(credentials.pat);
-        const client = createClient(user_service_1.UserServiceDefinition, apiEndpoint, personalAccessToken);
-        const outputData = [{ json: {} }];
-        return this.prepareOutputData(outputData);
+        const service = this.getNodeParameter("service", 0);
+        const serviceDefinition = clients[service];
+        console.log(service, serviceDefinition);
+        const client = createClient(serviceDefinition, apiEndpoint, personalAccessToken);
+        const operation = this.getNodeParameter("operation", 0);
+        if (operation in serviceDefinition.methods) {
+            const method = serviceDefinition.methods[operation];
+            const request = method.requestType.fromPartial({});
+            for (const key of Object.keys(request)) {
+                const value = this.getNodeParameter(key, 0);
+                request[key] = value;
+            }
+            const response = await client[operation](request);
+            return this.prepareOutputData([{ json: response }]);
+        }
+        else {
+            const outputData = [{ json: {} }];
+            return this.prepareOutputData(outputData);
+        }
     }
 }
 exports.Zitadel = Zitadel;
