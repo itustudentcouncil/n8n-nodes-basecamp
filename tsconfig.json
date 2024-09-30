@@ -21,6 +21,6 @@
 		"outDir": "./dist/",
 	},
 	"include": [
-		"*",
+		"src/nodes/**/*", "src/credentials",
 	],
 }
