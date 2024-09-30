@@ -178,7 +178,7 @@ const idSelector = {
   name: "parent_id",
   type: "number" as const,
   required: true,
-  default: 0, // Add a defa ult value
+  default: 0, // Add a default value
 
   displayOptions: {
     show: {
