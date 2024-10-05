@@ -1,17 +1,31 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Zitadel = exports.createAccessTokenInterceptor = void 0;
+const org_service_1 = require("./../../generated/zitadel/org/v2/org_service");
+const user_schema_service_1 = require("./../../generated/zitadel/resources/userschema/v3alpha/user_schema_service");
+const admin_1 = require("./../../generated/zitadel/admin");
+const action_service_1 = require("./../../generated/zitadel/resources/action/v3alpha/action_service");
+const management_1 = require("./../../generated/zitadel/management");
 const auth_1 = require("../../generated/zitadel/auth");
 const user_service_1 = require("../../generated/zitadel/user/v2/user_service");
 const nice_grpc_1 = require("nice-grpc");
 const name = "zitadel";
 const displayName = "Zitadel";
 const apiEndpoint = "https://zitadel.studentcouncil.dk";
-const services = [user_service_1.UserServiceDefinition, auth_1.AuthServiceDefinition];
+const services = [
+    user_service_1.UserServiceDefinition,
+    org_service_1.OrganizationServiceDefinition,
+    auth_1.AuthServiceDefinition,
+    management_1.ManagementServiceDefinition,
+    admin_1.AdminServiceDefinition,
+    action_service_1.ZITADELActionsDefinition,
+    user_schema_service_1.UserSchemaServiceDefinition
+];
 const clients = services.reduce((acc, service) => {
     acc[service.name] = service;
     return acc;
 }, {});
+console.log(org_service_1.OrganizationServiceDefinition.methods, "");
 function createClient(definition, apiEndpoint, ...interceptors) {
     const channel = (0, nice_grpc_1.createChannel)(apiEndpoint);
     let factory = (0, nice_grpc_1.createClientFactory)();
@@ -33,10 +47,12 @@ const createOperations = (service) => ({
     displayName: "Operation",
     name: "operation",
     type: "options",
-    options: Object.keys(service.methods).map((name) => ({
-        name,
-        value: name
-    })),
+    options: Object.keys(service.methods).map((name) => {
+        return {
+            name,
+            value: name
+        };
+    }),
     displayOptions: {
         show: {
             service: [service.name]
@@ -46,19 +62,28 @@ const createOperations = (service) => ({
     required: true
 });
 const createOperationProperties = (service) => {
+    var _a;
     const properties = [];
     for (const name of Object.keys(service.methods)) {
         const method = service.methods[name];
         const request = method.requestType.fromPartial({});
         for (const key of Object.keys(request)) {
+            const defaultValues = {
+                query: `{\n "limit": 10,\n "offset": 0,\n "order": "ASC"\n}`,
+                queries: `[]`
+            };
+            const isQuery = ["query", "queries"].includes(key);
+            const type = isQuery ? "json" : "string";
+            const value = (_a = defaultValues[key]) !== null && _a !== void 0 ? _a : "";
             const property = {
                 displayName: key,
                 name: key,
-                type: "string",
-                default: "",
+                type,
+                default: value,
                 required: true,
                 displayOptions: {
                     show: {
+                        service: [service.name],
                         operation: [name]
                     }
                 }
@@ -113,7 +138,6 @@ class Zitadel {
         const personalAccessToken = (0, exports.createAccessTokenInterceptor)(credentials.pat);
         const service = this.getNodeParameter("service", 0);
         const serviceDefinition = clients[service];
-        console.log(service, serviceDefinition);
         const client = createClient(serviceDefinition, apiEndpoint, personalAccessToken);
         const operation = this.getNodeParameter("operation", 0);
         if (operation in serviceDefinition.methods) {
@@ -121,8 +145,14 @@ class Zitadel {
             const request = method.requestType.fromPartial({});
             for (const key of Object.keys(request)) {
                 const value = this.getNodeParameter(key, 0);
-                request[key] = value;
+                try {
+                    request[key] = JSON.parse(value);
+                }
+                catch {
+                    request[key] = value;
+                }
             }
+            console.log(request);
             const response = await client[operation](request);
             return this.prepareOutputData([{ json: response }]);
         }

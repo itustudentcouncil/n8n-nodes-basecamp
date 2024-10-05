@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrganizationIdQuery = exports.InUserEmailsQuery = exports.TypeQuery = exports.StateQuery = exports.LoginNameQuery = exports.EmailQuery = exports.DisplayNameQuery = exports.NickNameQuery = exports.LastNameQuery = exports.FirstNameQuery = exports.UserNameQuery = exports.InUserIDQuery = exports.NotQuery = exports.AndQuery = exports.OrQuery = exports.SearchQuery = exports.userFieldNameToJSON = exports.userFieldNameFromJSON = exports.UserFieldName = exports.typeToJSON = exports.typeFromJSON = exports.Type = exports.protobufPackage = void 0;
+exports.OrganizationIdQuery = exports.InUserEmailsQuery = exports.TypeQuery = exports.StateQuery = exports.LoginNameQuery = exports.EmailQuery = exports.DisplayNameQuery = exports.NickNameQuery = exports.LastNameQuery = exports.FirstNameQuery = exports.UserNameQuery = exports.InUserIDQuery = exports.NotQuery = exports.AndQuery = exports.OrQuery = exports.SearchQuery = exports.createBaseSearchQuery = exports.userFieldNameToJSON = exports.userFieldNameFromJSON = exports.UserFieldName = exports.typeToJSON = exports.typeFromJSON = exports.Type = exports.protobufPackage = void 0;
 const wire_1 = require("@bufbuild/protobuf/wire");
 const object_js_1 = require("../../object/v2/object.js");
 const user_js_1 = require("./user.js");
@@ -141,9 +141,10 @@ function createBaseSearchQuery() {
         andQuery: undefined,
         notQuery: undefined,
         inUserEmailsQuery: undefined,
-        organizationIdQuery: undefined,
+        organizationIdQuery: undefined
     };
 }
+exports.createBaseSearchQuery = createBaseSearchQuery;
 exports.SearchQuery = {
     encode(message, writer = new wire_1.BinaryWriter()) {
         if (message.userNameQuery !== undefined) {
@@ -300,25 +301,51 @@ exports.SearchQuery = {
     },
     fromJSON(object) {
         return {
-            userNameQuery: isSet(object.userNameQuery) ? exports.UserNameQuery.fromJSON(object.userNameQuery) : undefined,
-            firstNameQuery: isSet(object.firstNameQuery) ? exports.FirstNameQuery.fromJSON(object.firstNameQuery) : undefined,
-            lastNameQuery: isSet(object.lastNameQuery) ? exports.LastNameQuery.fromJSON(object.lastNameQuery) : undefined,
-            nickNameQuery: isSet(object.nickNameQuery) ? exports.NickNameQuery.fromJSON(object.nickNameQuery) : undefined,
-            displayNameQuery: isSet(object.displayNameQuery) ? exports.DisplayNameQuery.fromJSON(object.displayNameQuery) : undefined,
-            emailQuery: isSet(object.emailQuery) ? exports.EmailQuery.fromJSON(object.emailQuery) : undefined,
-            stateQuery: isSet(object.stateQuery) ? exports.StateQuery.fromJSON(object.stateQuery) : undefined,
-            typeQuery: isSet(object.typeQuery) ? exports.TypeQuery.fromJSON(object.typeQuery) : undefined,
-            loginNameQuery: isSet(object.loginNameQuery) ? exports.LoginNameQuery.fromJSON(object.loginNameQuery) : undefined,
-            inUserIdsQuery: isSet(object.inUserIdsQuery) ? exports.InUserIDQuery.fromJSON(object.inUserIdsQuery) : undefined,
-            orQuery: isSet(object.orQuery) ? exports.OrQuery.fromJSON(object.orQuery) : undefined,
-            andQuery: isSet(object.andQuery) ? exports.AndQuery.fromJSON(object.andQuery) : undefined,
-            notQuery: isSet(object.notQuery) ? exports.NotQuery.fromJSON(object.notQuery) : undefined,
+            userNameQuery: isSet(object.userNameQuery)
+                ? exports.UserNameQuery.fromJSON(object.userNameQuery)
+                : undefined,
+            firstNameQuery: isSet(object.firstNameQuery)
+                ? exports.FirstNameQuery.fromJSON(object.firstNameQuery)
+                : undefined,
+            lastNameQuery: isSet(object.lastNameQuery)
+                ? exports.LastNameQuery.fromJSON(object.lastNameQuery)
+                : undefined,
+            nickNameQuery: isSet(object.nickNameQuery)
+                ? exports.NickNameQuery.fromJSON(object.nickNameQuery)
+                : undefined,
+            displayNameQuery: isSet(object.displayNameQuery)
+                ? exports.DisplayNameQuery.fromJSON(object.displayNameQuery)
+                : undefined,
+            emailQuery: isSet(object.emailQuery)
+                ? exports.EmailQuery.fromJSON(object.emailQuery)
+                : undefined,
+            stateQuery: isSet(object.stateQuery)
+                ? exports.StateQuery.fromJSON(object.stateQuery)
+                : undefined,
+            typeQuery: isSet(object.typeQuery)
+                ? exports.TypeQuery.fromJSON(object.typeQuery)
+                : undefined,
+            loginNameQuery: isSet(object.loginNameQuery)
+                ? exports.LoginNameQuery.fromJSON(object.loginNameQuery)
+                : undefined,
+            inUserIdsQuery: isSet(object.inUserIdsQuery)
+                ? exports.InUserIDQuery.fromJSON(object.inUserIdsQuery)
+                : undefined,
+            orQuery: isSet(object.orQuery)
+                ? exports.OrQuery.fromJSON(object.orQuery)
+                : undefined,
+            andQuery: isSet(object.andQuery)
+                ? exports.AndQuery.fromJSON(object.andQuery)
+                : undefined,
+            notQuery: isSet(object.notQuery)
+                ? exports.NotQuery.fromJSON(object.notQuery)
+                : undefined,
             inUserEmailsQuery: isSet(object.inUserEmailsQuery)
                 ? exports.InUserEmailsQuery.fromJSON(object.inUserEmailsQuery)
                 : undefined,
             organizationIdQuery: isSet(object.organizationIdQuery)
                 ? exports.OrganizationIdQuery.fromJSON(object.organizationIdQuery)
-                : undefined,
+                : undefined
         };
     },
     toJSON(message) {
@@ -375,53 +402,70 @@ exports.SearchQuery = {
     },
     fromPartial(object) {
         const message = createBaseSearchQuery();
-        message.userNameQuery = (object.userNameQuery !== undefined && object.userNameQuery !== null)
-            ? exports.UserNameQuery.fromPartial(object.userNameQuery)
-            : undefined;
-        message.firstNameQuery = (object.firstNameQuery !== undefined && object.firstNameQuery !== null)
-            ? exports.FirstNameQuery.fromPartial(object.firstNameQuery)
-            : undefined;
-        message.lastNameQuery = (object.lastNameQuery !== undefined && object.lastNameQuery !== null)
-            ? exports.LastNameQuery.fromPartial(object.lastNameQuery)
-            : undefined;
-        message.nickNameQuery = (object.nickNameQuery !== undefined && object.nickNameQuery !== null)
-            ? exports.NickNameQuery.fromPartial(object.nickNameQuery)
-            : undefined;
-        message.displayNameQuery = (object.displayNameQuery !== undefined && object.displayNameQuery !== null)
-            ? exports.DisplayNameQuery.fromPartial(object.displayNameQuery)
-            : undefined;
-        message.emailQuery = (object.emailQuery !== undefined && object.emailQuery !== null)
-            ? exports.EmailQuery.fromPartial(object.emailQuery)
-            : undefined;
-        message.stateQuery = (object.stateQuery !== undefined && object.stateQuery !== null)
-            ? exports.StateQuery.fromPartial(object.stateQuery)
-            : undefined;
-        message.typeQuery = (object.typeQuery !== undefined && object.typeQuery !== null)
-            ? exports.TypeQuery.fromPartial(object.typeQuery)
-            : undefined;
-        message.loginNameQuery = (object.loginNameQuery !== undefined && object.loginNameQuery !== null)
-            ? exports.LoginNameQuery.fromPartial(object.loginNameQuery)
-            : undefined;
-        message.inUserIdsQuery = (object.inUserIdsQuery !== undefined && object.inUserIdsQuery !== null)
-            ? exports.InUserIDQuery.fromPartial(object.inUserIdsQuery)
-            : undefined;
-        message.orQuery = (object.orQuery !== undefined && object.orQuery !== null)
-            ? exports.OrQuery.fromPartial(object.orQuery)
-            : undefined;
-        message.andQuery = (object.andQuery !== undefined && object.andQuery !== null)
-            ? exports.AndQuery.fromPartial(object.andQuery)
-            : undefined;
-        message.notQuery = (object.notQuery !== undefined && object.notQuery !== null)
-            ? exports.NotQuery.fromPartial(object.notQuery)
-            : undefined;
-        message.inUserEmailsQuery = (object.inUserEmailsQuery !== undefined && object.inUserEmailsQuery !== null)
-            ? exports.InUserEmailsQuery.fromPartial(object.inUserEmailsQuery)
-            : undefined;
-        message.organizationIdQuery = (object.organizationIdQuery !== undefined && object.organizationIdQuery !== null)
-            ? exports.OrganizationIdQuery.fromPartial(object.organizationIdQuery)
-            : undefined;
+        message.userNameQuery =
+            object.userNameQuery !== undefined && object.userNameQuery !== null
+                ? exports.UserNameQuery.fromPartial(object.userNameQuery)
+                : undefined;
+        message.firstNameQuery =
+            object.firstNameQuery !== undefined && object.firstNameQuery !== null
+                ? exports.FirstNameQuery.fromPartial(object.firstNameQuery)
+                : undefined;
+        message.lastNameQuery =
+            object.lastNameQuery !== undefined && object.lastNameQuery !== null
+                ? exports.LastNameQuery.fromPartial(object.lastNameQuery)
+                : undefined;
+        message.nickNameQuery =
+            object.nickNameQuery !== undefined && object.nickNameQuery !== null
+                ? exports.NickNameQuery.fromPartial(object.nickNameQuery)
+                : undefined;
+        message.displayNameQuery =
+            object.displayNameQuery !== undefined && object.displayNameQuery !== null
+                ? exports.DisplayNameQuery.fromPartial(object.displayNameQuery)
+                : undefined;
+        message.emailQuery =
+            object.emailQuery !== undefined && object.emailQuery !== null
+                ? exports.EmailQuery.fromPartial(object.emailQuery)
+                : undefined;
+        message.stateQuery =
+            object.stateQuery !== undefined && object.stateQuery !== null
+                ? exports.StateQuery.fromPartial(object.stateQuery)
+                : undefined;
+        message.typeQuery =
+            object.typeQuery !== undefined && object.typeQuery !== null
+                ? exports.TypeQuery.fromPartial(object.typeQuery)
+                : undefined;
+        message.loginNameQuery =
+            object.loginNameQuery !== undefined && object.loginNameQuery !== null
+                ? exports.LoginNameQuery.fromPartial(object.loginNameQuery)
+                : undefined;
+        message.inUserIdsQuery =
+            object.inUserIdsQuery !== undefined && object.inUserIdsQuery !== null
+                ? exports.InUserIDQuery.fromPartial(object.inUserIdsQuery)
+                : undefined;
+        message.orQuery =
+            object.orQuery !== undefined && object.orQuery !== null
+                ? exports.OrQuery.fromPartial(object.orQuery)
+                : undefined;
+        message.andQuery =
+            object.andQuery !== undefined && object.andQuery !== null
+                ? exports.AndQuery.fromPartial(object.andQuery)
+                : undefined;
+        message.notQuery =
+            object.notQuery !== undefined && object.notQuery !== null
+                ? exports.NotQuery.fromPartial(object.notQuery)
+                : undefined;
+        message.inUserEmailsQuery =
+            object.inUserEmailsQuery !== undefined &&
+                object.inUserEmailsQuery !== null
+                ? exports.InUserEmailsQuery.fromPartial(object.inUserEmailsQuery)
+                : undefined;
+        message.organizationIdQuery =
+            object.organizationIdQuery !== undefined &&
+                object.organizationIdQuery !== null
+                ? exports.OrganizationIdQuery.fromPartial(object.organizationIdQuery)
+                : undefined;
         return message;
-    },
+    }
 };
 function createBaseOrQuery() {
     return { queries: [] };
@@ -456,7 +500,9 @@ exports.OrQuery = {
     },
     fromJSON(object) {
         return {
-            queries: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.queries) ? object.queries.map((e) => exports.SearchQuery.fromJSON(e)) : [],
+            queries: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.queries)
+                ? object.queries.map((e) => exports.SearchQuery.fromJSON(e))
+                : []
         };
     },
     toJSON(message) {
@@ -473,9 +519,10 @@ exports.OrQuery = {
     fromPartial(object) {
         var _a;
         const message = createBaseOrQuery();
-        message.queries = ((_a = object.queries) === null || _a === void 0 ? void 0 : _a.map((e) => exports.SearchQuery.fromPartial(e))) || [];
+        message.queries =
+            ((_a = object.queries) === null || _a === void 0 ? void 0 : _a.map((e) => exports.SearchQuery.fromPartial(e))) || [];
         return message;
-    },
+    }
 };
 function createBaseAndQuery() {
     return { queries: [] };
@@ -510,7 +557,9 @@ exports.AndQuery = {
     },
     fromJSON(object) {
         return {
-            queries: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.queries) ? object.queries.map((e) => exports.SearchQuery.fromJSON(e)) : [],
+            queries: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.queries)
+                ? object.queries.map((e) => exports.SearchQuery.fromJSON(e))
+                : []
         };
     },
     toJSON(message) {
@@ -527,9 +576,10 @@ exports.AndQuery = {
     fromPartial(object) {
         var _a;
         const message = createBaseAndQuery();
-        message.queries = ((_a = object.queries) === null || _a === void 0 ? void 0 : _a.map((e) => exports.SearchQuery.fromPartial(e))) || [];
+        message.queries =
+            ((_a = object.queries) === null || _a === void 0 ? void 0 : _a.map((e) => exports.SearchQuery.fromPartial(e))) || [];
         return message;
-    },
+    }
 };
 function createBaseNotQuery() {
     return { query: undefined };
@@ -563,7 +613,11 @@ exports.NotQuery = {
         return message;
     },
     fromJSON(object) {
-        return { query: isSet(object.query) ? exports.SearchQuery.fromJSON(object.query) : undefined };
+        return {
+            query: isSet(object.query)
+                ? exports.SearchQuery.fromJSON(object.query)
+                : undefined
+        };
     },
     toJSON(message) {
         const obj = {};
@@ -577,11 +631,12 @@ exports.NotQuery = {
     },
     fromPartial(object) {
         const message = createBaseNotQuery();
-        message.query = (object.query !== undefined && object.query !== null)
-            ? exports.SearchQuery.fromPartial(object.query)
-            : undefined;
+        message.query =
+            object.query !== undefined && object.query !== null
+                ? exports.SearchQuery.fromPartial(object.query)
+                : undefined;
         return message;
-    },
+    }
 };
 function createBaseInUserIDQuery() {
     return { userIds: [] };
@@ -616,7 +671,9 @@ exports.InUserIDQuery = {
     },
     fromJSON(object) {
         return {
-            userIds: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.userIds) ? object.userIds.map((e) => globalThis.String(e)) : [],
+            userIds: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.userIds)
+                ? object.userIds.map((e) => globalThis.String(e))
+                : []
         };
     },
     toJSON(message) {
@@ -635,7 +692,7 @@ exports.InUserIDQuery = {
         const message = createBaseInUserIDQuery();
         message.userIds = ((_a = object.userIds) === null || _a === void 0 ? void 0 : _a.map((e) => e)) || [];
         return message;
-    },
+    }
 };
 function createBaseUserNameQuery() {
     return { userName: "", method: 0 };
@@ -679,8 +736,10 @@ exports.UserNameQuery = {
     },
     fromJSON(object) {
         return {
-            userName: isSet(object.userName) ? globalThis.String(object.userName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            userName: isSet(object.userName)
+                ? globalThis.String(object.userName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -702,7 +761,7 @@ exports.UserNameQuery = {
         message.userName = (_a = object.userName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseFirstNameQuery() {
     return { firstName: "", method: 0 };
@@ -746,8 +805,10 @@ exports.FirstNameQuery = {
     },
     fromJSON(object) {
         return {
-            firstName: isSet(object.firstName) ? globalThis.String(object.firstName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            firstName: isSet(object.firstName)
+                ? globalThis.String(object.firstName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -769,7 +830,7 @@ exports.FirstNameQuery = {
         message.firstName = (_a = object.firstName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseLastNameQuery() {
     return { lastName: "", method: 0 };
@@ -813,8 +874,10 @@ exports.LastNameQuery = {
     },
     fromJSON(object) {
         return {
-            lastName: isSet(object.lastName) ? globalThis.String(object.lastName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            lastName: isSet(object.lastName)
+                ? globalThis.String(object.lastName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -836,7 +899,7 @@ exports.LastNameQuery = {
         message.lastName = (_a = object.lastName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseNickNameQuery() {
     return { nickName: "", method: 0 };
@@ -880,8 +943,10 @@ exports.NickNameQuery = {
     },
     fromJSON(object) {
         return {
-            nickName: isSet(object.nickName) ? globalThis.String(object.nickName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            nickName: isSet(object.nickName)
+                ? globalThis.String(object.nickName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -903,7 +968,7 @@ exports.NickNameQuery = {
         message.nickName = (_a = object.nickName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseDisplayNameQuery() {
     return { displayName: "", method: 0 };
@@ -947,8 +1012,10 @@ exports.DisplayNameQuery = {
     },
     fromJSON(object) {
         return {
-            displayName: isSet(object.displayName) ? globalThis.String(object.displayName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            displayName: isSet(object.displayName)
+                ? globalThis.String(object.displayName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -970,7 +1037,7 @@ exports.DisplayNameQuery = {
         message.displayName = (_a = object.displayName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseEmailQuery() {
     return { emailAddress: "", method: 0 };
@@ -1014,8 +1081,10 @@ exports.EmailQuery = {
     },
     fromJSON(object) {
         return {
-            emailAddress: isSet(object.emailAddress) ? globalThis.String(object.emailAddress) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            emailAddress: isSet(object.emailAddress)
+                ? globalThis.String(object.emailAddress)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -1037,7 +1106,7 @@ exports.EmailQuery = {
         message.emailAddress = (_a = object.emailAddress) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseLoginNameQuery() {
     return { loginName: "", method: 0 };
@@ -1081,8 +1150,10 @@ exports.LoginNameQuery = {
     },
     fromJSON(object) {
         return {
-            loginName: isSet(object.loginName) ? globalThis.String(object.loginName) : "",
-            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0,
+            loginName: isSet(object.loginName)
+                ? globalThis.String(object.loginName)
+                : "",
+            method: isSet(object.method) ? (0, object_js_1.textQueryMethodFromJSON)(object.method) : 0
         };
     },
     toJSON(message) {
@@ -1104,7 +1175,7 @@ exports.LoginNameQuery = {
         message.loginName = (_a = object.loginName) !== null && _a !== void 0 ? _a : "";
         message.method = (_b = object.method) !== null && _b !== void 0 ? _b : 0;
         return message;
-    },
+    }
 };
 function createBaseStateQuery() {
     return { state: 0 };
@@ -1155,7 +1226,7 @@ exports.StateQuery = {
         const message = createBaseStateQuery();
         message.state = (_a = object.state) !== null && _a !== void 0 ? _a : 0;
         return message;
-    },
+    }
 };
 function createBaseTypeQuery() {
     return { type: 0 };
@@ -1206,7 +1277,7 @@ exports.TypeQuery = {
         const message = createBaseTypeQuery();
         message.type = (_a = object.type) !== null && _a !== void 0 ? _a : 0;
         return message;
-    },
+    }
 };
 function createBaseInUserEmailsQuery() {
     return { userEmails: [] };
@@ -1243,7 +1314,7 @@ exports.InUserEmailsQuery = {
         return {
             userEmails: globalThis.Array.isArray(object === null || object === void 0 ? void 0 : object.userEmails)
                 ? object.userEmails.map((e) => globalThis.String(e))
-                : [],
+                : []
         };
     },
     toJSON(message) {
@@ -1262,7 +1333,7 @@ exports.InUserEmailsQuery = {
         const message = createBaseInUserEmailsQuery();
         message.userEmails = ((_a = object.userEmails) === null || _a === void 0 ? void 0 : _a.map((e) => e)) || [];
         return message;
-    },
+    }
 };
 function createBaseOrganizationIdQuery() {
     return { organizationId: "" };
@@ -1296,7 +1367,11 @@ exports.OrganizationIdQuery = {
         return message;
     },
     fromJSON(object) {
-        return { organizationId: isSet(object.organizationId) ? globalThis.String(object.organizationId) : "" };
+        return {
+            organizationId: isSet(object.organizationId)
+                ? globalThis.String(object.organizationId)
+                : ""
+        };
     },
     toJSON(message) {
         const obj = {};
@@ -1313,7 +1388,7 @@ exports.OrganizationIdQuery = {
         const message = createBaseOrganizationIdQuery();
         message.organizationId = (_a = object.organizationId) !== null && _a !== void 0 ? _a : "";
         return message;
-    },
+    }
 };
 function isSet(value) {
     return value !== null && value !== undefined;

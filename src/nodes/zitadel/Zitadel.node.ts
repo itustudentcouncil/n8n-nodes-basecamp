@@ -1,3 +1,8 @@
+import { OrganizationServiceDefinition } from "./../../generated/zitadel/org/v2/org_service"
+import { UserSchemaServiceDefinition } from "./../../generated/zitadel/resources/userschema/v3alpha/user_schema_service"
+import { AdminServiceDefinition } from "./../../generated/zitadel/admin"
+import { ZITADELActionsDefinition } from "./../../generated/zitadel/resources/action/v3alpha/action_service"
+import { ManagementServiceDefinition } from "./../../generated/zitadel/management"
 import { AuthServiceDefinition } from "../../generated/zitadel/auth"
 import { UserServiceDefinition } from "../../generated/zitadel/user/v2/user_service"
 import {
@@ -14,7 +19,15 @@ const name = "zitadel"
 const displayName = "Zitadel"
 const apiEndpoint = "https://zitadel.studentcouncil.dk"
 
-const services = [UserServiceDefinition, AuthServiceDefinition]
+const services = [
+  UserServiceDefinition,
+  OrganizationServiceDefinition,
+  AuthServiceDefinition,
+  ManagementServiceDefinition,
+  AdminServiceDefinition,
+  ZITADELActionsDefinition,
+  UserSchemaServiceDefinition
+]
 type Services = (typeof services)[number]
 
 const clients: {
@@ -31,6 +44,8 @@ const clients: {
   },
   {}
 )
+
+console.log(OrganizationServiceDefinition.methods, "")
 
 function createClient(
   definition: ServiceDefinition,
@@ -58,10 +73,12 @@ const createOperations = (service: Services) => ({
   displayName: "Operation",
   name: "operation",
   type: "options" as const,
-  options: Object.keys(service.methods).map((name) => ({
-    name,
-    value: name
-  })),
+  options: Object.keys(service.methods).map((name) => {
+    return {
+      name,
+      value: name
+    }
+  }),
   displayOptions: {
     show: {
       service: [service.name]
@@ -77,15 +94,26 @@ const createOperationProperties = (service: ServiceDefinition) => {
     const method = (service.methods as any)[name]
     const request = method.requestType.fromPartial({})
     for (const key of Object.keys(request)) {
+      const defaultValues: { [key: string]: string } = {
+        query: `{\n "limit": 10,\n "offset": 0,\n "order": "ASC"\n}`,
+        queries: `[]`
+      }
+      const isQuery = ["query", "queries"].includes(key)
+      const type = isQuery ? ("json" as const) : ("string" as const)
+
+      const value: string = defaultValues[key] ?? ""
+
       const property = {
         displayName: key,
         name: key,
-        type: "string" as const,
-        default: "",
+        type,
+        default: value,
         required: true,
+
         displayOptions: {
           show: {
-            operation: [name]
+            service: [service.name as unknown as string],
+            operation: [name as string]
           }
         }
       }
@@ -155,8 +183,6 @@ export class Zitadel implements INodeType {
 
     const serviceDefinition = clients[service]
 
-    console.log(service, serviceDefinition)
-
     const client = createClient(
       serviceDefinition as unknown as ServiceDefinition,
       apiEndpoint,
@@ -170,8 +196,13 @@ export class Zitadel implements INodeType {
       const request = method.requestType.fromPartial({})
       for (const key of Object.keys(request)) {
         const value = this.getNodeParameter(key, 0) as string
-        request[key] = value
+        try {
+          request[key] = JSON.parse(value)
+        } catch {
+          request[key] = value
+        }
       }
+      console.log(request)
       const response = await (client as any)[operation](request)
       return this.prepareOutputData([{ json: response }])
     } else {

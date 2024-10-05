@@ -19,7 +19,7 @@ export declare class Zitadel implements INodeType {
             }[];
             displayOptions: {
                 show: {
-                    service: ("UserService" | "AuthService")[];
+                    service: ("UserService" | "OrganizationService" | "AuthService" | "ManagementService" | "AdminService" | "ZITADELActions" | "UserSchemaService")[];
                 };
             };
             default: string;
@@ -27,11 +27,12 @@ export declare class Zitadel implements INodeType {
         } | {
             displayName: string;
             name: string;
-            type: "string";
+            type: "string" | "json";
             default: string;
             required: boolean;
             displayOptions: {
                 show: {
+                    service: string[];
                     operation: string[];
                 };
             };
@@ -40,10 +41,10 @@ export declare class Zitadel implements INodeType {
             name: string;
             type: "options";
             options: {
-                name: "UserService" | "AuthService";
-                value: "UserService" | "AuthService";
+                name: "UserService" | "OrganizationService" | "AuthService" | "ManagementService" | "AdminService" | "ZITADELActions" | "UserSchemaService";
+                value: "UserService" | "OrganizationService" | "AuthService" | "ManagementService" | "AdminService" | "ZITADELActions" | "UserSchemaService";
             }[];
-            default: "UserService" | "AuthService";
+            default: "UserService" | "OrganizationService" | "AuthService" | "ManagementService" | "AdminService" | "ZITADELActions" | "UserSchemaService";
             noDataExpression: boolean;
             required: boolean;
             description: string;

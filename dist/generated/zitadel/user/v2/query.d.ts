@@ -95,6 +95,7 @@ export interface InUserEmailsQuery {
 export interface OrganizationIdQuery {
     organizationId: string;
 }
+export declare function createBaseSearchQuery(): SearchQuery;
 export declare const SearchQuery: MessageFns<SearchQuery>;
 export declare const OrQuery: MessageFns<OrQuery>;
 export declare const AndQuery: MessageFns<AndQuery>;
