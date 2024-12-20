@@ -15,6 +15,7 @@
             "get": {
                 "tags": ["Card Tables"],
                 "summary": "Get a card table",
+                "description": "Returns a specific card table",
                 "operationId": "getCardTable",
                 "parameters": [
                     {
@@ -1951,6 +1952,49 @@
                 }
             }
         },
+        "/attachments.json": {
+            "post": {
+                "tags": ["Attachments"],
+                "summary": "Create an attachment",
+                "description": "Uploads a file and returns an attachable_sgid that can be used in other endpoints",
+                "operationId": "createAttachment",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "description": "Name of the file being uploaded",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "*/*": {
+                            "schema": {
+                                "type": "string",
+                                "format": "binary",
+                                "description": "Raw binary data of the file"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Attachment created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AttachmentResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/templates.json": {
             "get": {
                 "tags": ["Templates"],
@@ -2228,6 +2272,202 @@
                 }
             }
         },
+        "/buckets/{bucketId}/vaults/{vaultId}/uploads.json": {
+            "get": {
+                "tags": ["Uploads"],
+                "summary": "Get uploads",
+                "description": "Returns a paginated list of active uploads in the project's vault",
+                "operationId": "getUploads",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "vaultId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of uploads",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Upload"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Uploads"],
+                "summary": "Create an upload",
+                "description": "Creates a new upload in the project's vault",
+                "operationId": "createUpload",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "vaultId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["attachable_sgid"],
+                                "properties": {
+                                    "attachable_sgid": {
+                                        "type": "string",
+                                        "description": "SGID for an uploaded attachment"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Information about the upload in HTML format"
+                                    },
+                                    "base_name": {
+                                        "type": "string",
+                                        "description": "New file name for the upload without extension (e.g. 'pizza' for 'pizza.png')"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Upload created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Upload"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/uploads/{uploadId}.json": {
+            "get": {
+                "tags": ["Uploads"],
+                "summary": "Get an upload",
+                "description": "Returns a specific upload",
+                "operationId": "getUpload",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uploadId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Upload details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Upload"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Uploads"],
+                "summary": "Update an upload",
+                "description": "Updates a specific upload's description and base name",
+                "operationId": "updateUpload",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "uploadId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "description": {
+                                        "type": "string",
+                                        "description": "Information about the upload in HTML format"
+                                    },
+                                    "base_name": {
+                                        "type": "string",
+                                        "description": "New file name for the upload without extension"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Upload updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Upload"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/buckets/{bucketId}/vaults/{vaultId}/documents.json": {
             "get": {
                 "tags": ["Documents"],
@@ -2418,6 +2658,611 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/lineup/markers.json": {
+            "post": {
+                "tags": ["Lineup Markers"],
+                "summary": "Create a marker",
+                "description": "Creates an account wide marker that shows up in the Lineup",
+                "operationId": "createLineupMarker",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["name", "date"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Name of the marker"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "Date of the marker (ISO8601 formatted without time part)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Marker created successfully"
+                    }
+                }
+            }
+        },
+        "/lineup/markers/{markerId}.json": {
+            "put": {
+                "tags": ["Lineup Markers"],
+                "summary": "Update a marker",
+                "description": "Change name and/or date of a specific marker",
+                "operationId": "updateLineupMarker",
+                "parameters": [
+                    {
+                        "name": "markerId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the marker to update",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "description": "Name of the marker"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "description": "Date of the marker (ISO8601 formatted without time part)"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Marker updated successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Lineup Markers"],
+                "summary": "Destroy a marker",
+                "description": "Permanently destroys a specific marker",
+                "operationId": "destroyLineupMarker",
+                "parameters": [
+                    {
+                        "name": "markerId",
+                        "in": "path",
+                        "required": true,
+                        "description": "ID of the marker to destroy",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Marker destroyed successfully"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/recordings/{recordingId}/subscription.json": {
+            "get": {
+                "tags": ["Subscriptions"],
+                "summary": "Get subscription",
+                "description": "Returns subscription information for a recording",
+                "operationId": "getSubscription",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "recordingId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Subscription information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Subscriptions"],
+                "summary": "Subscribe current user",
+                "description": "Subscribes the current user to the recording",
+                "operationId": "subscribeCurrentUser",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "recordingId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Current subscription information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Subscriptions"],
+                "summary": "Unsubscribe current user",
+                "description": "Unsubscribes the current user from the recording",
+                "operationId": "unsubscribeCurrentUser",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "recordingId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successfully unsubscribed"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Subscriptions"],
+                "summary": "Update subscription",
+                "description": "Add and remove people from the list of subscribers",
+                "operationId": "updateSubscription",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "recordingId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "subscriptions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "description": "Array of people IDs to subscribe"
+                                    },
+                                    "unsubscriptions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "description": "Array of people IDs to unsubscribe"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Updated subscription information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Subscription"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/schedules/{scheduleId}.json": {
+            "get": {
+                "tags": ["Schedules"],
+                "summary": "Get schedule",
+                "description": "Returns the schedule for a project",
+                "operationId": "getSchedule",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "scheduleId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Schedule information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Schedule"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Schedules"],
+                "summary": "Update a schedule",
+                "description": "Updates a project's schedule settings",
+                "operationId": "updateSchedule",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "scheduleId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["include_due_assignments"],
+                                "properties": {
+                                    "include_due_assignments": {
+                                        "type": "boolean",
+                                        "description": "Whether the schedule should include due dates from to-dos, cards and steps"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Schedule updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Schedule"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/schedules/{scheduleId}/entries.json": {
+            "get": {
+                "tags": ["Schedule Entries"],
+                "summary": "Get schedule entries",
+                "description": "Returns a paginated list of active schedule entries in a project's schedule",
+                "operationId": "getScheduleEntries",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "scheduleId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter entries by status",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["archived", "trashed"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of schedule entries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ScheduleEntry"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Schedule Entries"],
+                "summary": "Create a schedule entry",
+                "description": "Creates a new schedule entry in a project's schedule",
+                "operationId": "createScheduleEntry",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "scheduleId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["summary", "starts_at", "ends_at"],
+                                "properties": {
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "What this schedule entry is about"
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When this schedule entry begins (ISO 8601)"
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When this schedule entry ends (ISO 8601)"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "More information about the schedule entry (HTML allowed)"
+                                    },
+                                    "participant_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "description": "Array of people IDs that will participate"
+                                    },
+                                    "all_day": {
+                                        "type": "boolean",
+                                        "description": "Whether the entry is an all-day event"
+                                    },
+                                    "notify": {
+                                        "type": "boolean",
+                                        "description": "Whether to notify the participants about the entry"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Schedule entry created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScheduleEntry"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/schedule_entries/{entryId}.json": {
+            "get": {
+                "tags": ["Schedule Entries"],
+                "summary": "Get a schedule entry",
+                "description": "Returns a specific schedule entry. For recurring entries, redirects to the first occurrence.",
+                "operationId": "getScheduleEntry",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "entryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Schedule entry details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScheduleEntry"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Schedule Entries"],
+                "summary": "Update a schedule entry",
+                "description": "Updates a specific schedule entry",
+                "operationId": "updateScheduleEntry",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "entryId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "summary": {
+                                        "type": "string",
+                                        "description": "What this schedule entry is about"
+                                    },
+                                    "starts_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When this schedule entry begins (ISO 8601)"
+                                    },
+                                    "ends_at": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "description": "When this schedule entry ends (ISO 8601)"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "description": "More information about the schedule entry (HTML allowed)"
+                                    },
+                                    "participant_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        },
+                                        "description": "Array of people IDs that will participate"
+                                    },
+                                    "all_day": {
+                                        "type": "boolean",
+                                        "description": "Whether the entry is an all-day event"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Schedule entry updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ScheduleEntry"
                                 }
                             }
                         }
@@ -3693,6 +4538,418 @@
                     "content": {
                         "type": "string",
                         "description": "HTML content of the document"
+                    }
+                }
+            },
+            "Upload": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["active", "archived", "trashed"]
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["Upload"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "subscription_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "comments_count": {
+                        "type": "integer"
+                    },
+                    "comments_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Vault"]
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Project"]
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "HTML description of the upload"
+                    },
+                    "content_type": {
+                        "type": "string",
+                        "description": "MIME type of the file"
+                    },
+                    "byte_size": {
+                        "type": "integer",
+                        "description": "Size of the file in bytes"
+                    },
+                    "filename": {
+                        "type": "string"
+                    },
+                    "download_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_download_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "width": {
+                        "type": "integer",
+                        "description": "Width of the image if applicable"
+                    },
+                    "height": {
+                        "type": "integer",
+                        "description": "Height of the image if applicable"
+                    }
+                }
+            },
+            "AttachmentResponse": {
+                "type": "object",
+                "required": ["attachable_sgid"],
+                "properties": {
+                    "attachable_sgid": {
+                        "type": "string",
+                        "description": "Global unique identifier for the attachment that can be used in other endpoints"
+                    }
+                }
+            },
+            "LineupMarker": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "date": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                }
+            },
+            "Subscription": {
+                "type": "object",
+                "properties": {
+                    "subscribed": {
+                        "type": "boolean",
+                        "description": "Whether the current user is subscribed"
+                    },
+                    "count": {
+                        "type": "integer",
+                        "description": "Number of subscribers"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL for managing subscriptions"
+                    },
+                    "subscribers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        },
+                        "description": "List of subscribers"
+                    }
+                }
+            },
+            "Schedule": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["active", "archived", "trashed"]
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["Schedule"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Project"]
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "include_due_assignments": {
+                        "type": "boolean",
+                        "description": "Whether the schedule includes due dates from to-dos, cards and steps"
+                    },
+                    "entries_count": {
+                        "type": "integer",
+                        "description": "Number of entries in the schedule"
+                    },
+                    "entries_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "URL to get schedule entries"
+                    }
+                }
+            },
+            "ScheduleEntry": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["active", "archived", "trashed"]
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["Schedule::Entry"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "subscription_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "comments_count": {
+                        "type": "integer"
+                    },
+                    "comments_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Schedule"]
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Project"]
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "all_day": {
+                        "type": "boolean"
+                    },
+                    "starts_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "ends_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        }
+                    },
+                    "recurrence_schedule": {
+                        "type": "object",
+                        "properties": {
+                            "frequency": {
+                                "type": "string",
+                                "enum": ["every_month"]
+                            },
+                            "days": {
+                                "type": "array",
+                                "items": {
+                                    "type": "integer"
+                                }
+                            },
+                            "hour": {
+                                "type": "integer"
+                            },
+                            "minute": {
+                                "type": "integer"
+                            },
+                            "week_instance": {
+                                "type": "integer"
+                            },
+                            "start_date": {
+                                "type": "string",
+                                "format": "date"
+                            },
+                            "end_date": {
+                                "type": "string",
+                                "format": "date"
+                            }
+                        }
                     }
                 }
             }
