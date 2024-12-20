@@ -757,6 +757,1673 @@
                     }
                 }
             }
+        },
+        "/buckets/{bucketId}/card_tables/columns/{columnId}.json": {
+            "get": {
+                "tags": ["Card Tables"],
+                "summary": "Get a column",
+                "description": "Returns a specific column in a card table",
+                "operationId": "getColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The column details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Card Tables"],
+                "summary": "Update a column",
+                "description": "Updates a specific column in a card table",
+                "operationId": "updateColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The updated column",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/{cardTableId}/columns.json": {
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Create a column",
+                "description": "Creates a new column in a card table",
+                "operationId": "createColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cardTableId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["title"],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "The created column",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/{cardTableId}/moves.json": {
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Move a column",
+                "description": "Moves a column to a new position in the card table",
+                "operationId": "moveColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cardTableId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["source_id", "target_id"],
+                                "properties": {
+                                    "source_id": {
+                                        "type": "integer"
+                                    },
+                                    "target_id": {
+                                        "type": "integer"
+                                    },
+                                    "position": {
+                                        "type": "integer",
+                                        "default": 1
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Column moved successfully"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/columns/{columnId}/color.json": {
+            "put": {
+                "tags": ["Card Tables"],
+                "summary": "Change column color",
+                "description": "Changes the color of a column",
+                "operationId": "changeColumnColor",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["color"],
+                                "properties": {
+                                    "color": {
+                                        "type": "string",
+                                        "enum": ["white", "red", "orange", "yellow", "green", "blue", "aqua", "purple", "gray", "pink", "brown"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Column color updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/lists/{columnId}/subscription.json": {
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Watch a column",
+                "description": "Start watching a column",
+                "operationId": "watchColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Started watching column successfully"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Card Tables"],
+                "summary": "Unwatch a column",
+                "description": "Stop watching a column",
+                "operationId": "unwatchColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Stopped watching column successfully"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/columns/{columnId}/on_hold.json": {
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Add on hold section",
+                "description": "Creates an on hold section in the column",
+                "operationId": "addOnHoldSection",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "On hold section added successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Card Tables"],
+                "summary": "Remove on hold section",
+                "description": "Removes the on hold section from the column",
+                "operationId": "removeOnHoldSection",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "On hold section removed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Column"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/lists/{columnId}/cards.json": {
+            "get": {
+                "tags": ["Card Tables"],
+                "summary": "Get cards in a column",
+                "description": "Returns a paginated list of cards in a specific column",
+                "operationId": "getCardsInColumn",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of cards in the column",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Card"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Create a card",
+                "description": "Creates a new card in a specific column",
+                "operationId": "createCard",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "columnId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["title"],
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "due_on": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "notify": {
+                                        "type": "boolean",
+                                        "default": false
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Card created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/cards/{cardId}.json": {
+            "get": {
+                "tags": ["Card Tables"],
+                "summary": "Get a card",
+                "description": "Returns details of a specific card",
+                "operationId": "getCard",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cardId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Card Tables"],
+                "summary": "Update a card",
+                "description": "Updates a specific card",
+                "operationId": "updateCard",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cardId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "content": {
+                                        "type": "string"
+                                    },
+                                    "due_on": {
+                                        "type": "string",
+                                        "format": "date"
+                                    },
+                                    "assignee_ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Card updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/card_tables/cards/{cardId}/moves.json": {
+            "post": {
+                "tags": ["Card Tables"],
+                "summary": "Move a card",
+                "description": "Moves a card to a different column",
+                "operationId": "moveCard",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "cardId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["column_id"],
+                                "properties": {
+                                    "column_id": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "204": {
+                        "description": "Card moved successfully"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/chats/{chatId}/integrations.json": {
+            "get": {
+                "tags": ["Chatbots"],
+                "summary": "Get chatbots",
+                "description": "Returns all chatbots from the account with the line URL for the specified campfire",
+                "operationId": "getChatbots",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of chatbots",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Chatbot"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Chatbots"],
+                "summary": "Create a chatbot",
+                "description": "Creates a new chatbot on the account",
+                "operationId": "createChatbot",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["service_name"],
+                                "properties": {
+                                    "service_name": {
+                                        "type": "string",
+                                        "description": "Name of the chatbot, used to invoke queries and commands. No spaces, emoji or non-word characters allowed"
+                                    },
+                                    "command_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "HTTPS URL that Basecamp should call when the bot is addressed"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Chatbot created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Chatbot"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/chats/{chatId}/integrations/{integrationId}.json": {
+            "get": {
+                "tags": ["Chatbots"],
+                "summary": "Get a chatbot",
+                "description": "Returns a specific chatbot with the line URL",
+                "operationId": "getChatbot",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "integrationId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Chatbot details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Chatbot"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Chatbots"],
+                "summary": "Update a chatbot",
+                "description": "Updates a specific chatbot",
+                "operationId": "updateChatbot",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "integrationId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["service_name"],
+                                "properties": {
+                                    "service_name": {
+                                        "type": "string",
+                                        "description": "Name of the chatbot, used to invoke queries and commands. No spaces, emoji or non-word characters allowed"
+                                    },
+                                    "command_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "HTTPS URL that Basecamp should call when the bot is addressed"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Chatbot updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Chatbot"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Chatbots"],
+                "summary": "Destroy a chatbot",
+                "description": "Deletes a chatbot across the account",
+                "operationId": "destroyChatbot",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "integrationId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Chatbot deleted successfully"
+                    }
+                }
+            }
+        },
+        "/integrations/{chatbotKey}/buckets/{bucketId}/chats/{chatId}/lines.json": {
+            "post": {
+                "tags": ["Chatbots"],
+                "summary": "Create a line",
+                "description": "Creates a line in a Campfire using a chatbot",
+                "operationId": "createChatbotLine",
+                "parameters": [
+                    {
+                        "name": "chatbotKey",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "chatId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "content_param",
+                        "in": "query",
+                        "description": "Modifies the name of the required content param to support webhooks from third-party services",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["content"],
+                                "properties": {
+                                    "content": {
+                                        "type": "string",
+                                        "description": "The body of the Campfire line. Supports rich text HTML tags plus additional tags: table, tr, td, th, thead, tbody, details, summary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Line created successfully"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/webhooks.json": {
+            "get": {
+                "tags": ["Webhooks"],
+                "summary": "Get webhooks",
+                "description": "Returns all webhooks from the basecamp",
+                "operationId": "getWebhooks",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of webhooks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Webhook"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - client users aren't allowed to perform webhook actions"
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Webhooks"],
+                "summary": "Create a webhook",
+                "description": "Creates a new webhook in the project",
+                "operationId": "createWebhook",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["payload_url"],
+                                "properties": {
+                                    "payload_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "HTTPS URL that Basecamp should call"
+                                    },
+                                    "types": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": ["all", "Comment", "Client::Approval::Response", "Client::Forward", "Client::Reply", "CloudFile", "Document", "GoogleDocument", "Inbox::Forward", "Message", "Question", "Question::Answer", "Schedule::Entry", "Todo", "Todolist", "Upload", "Vault"]
+                                        },
+                                        "description": "Array of types to trigger webhook calls"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Webhook created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Webhook"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - client users aren't allowed to perform webhook actions"
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/webhooks/{webhookId}.json": {
+            "get": {
+                "tags": ["Webhooks"],
+                "summary": "Get a webhook",
+                "description": "Returns a specific webhook with recent deliveries",
+                "operationId": "getWebhook",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "webhookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Webhook details with recent deliveries",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/WebhookWithDeliveries"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - client users aren't allowed to perform webhook actions"
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Webhooks"],
+                "summary": "Update a webhook",
+                "description": "Updates a specific webhook",
+                "operationId": "updateWebhook",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "webhookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["payload_url"],
+                                "properties": {
+                                    "payload_url": {
+                                        "type": "string",
+                                        "format": "uri",
+                                        "description": "HTTPS URL that Basecamp will call"
+                                    },
+                                    "types": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "enum": ["all", "Comment", "Client::Approval::Response", "Client::Forward", "Client::Reply", "CloudFile", "Document", "GoogleDocument", "Inbox::Forward", "Message", "Question", "Question::Answer", "Schedule::Entry", "Todo", "Todolist", "Upload", "Vault"]
+                                        },
+                                        "description": "Array of types to trigger webhook calls"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "description": "Whether this webhook should be matching"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Webhook updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Webhook"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden - client users aren't allowed to perform webhook actions"
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Webhooks"],
+                "summary": "Destroy a webhook",
+                "description": "Deletes a webhook",
+                "operationId": "destroyWebhook",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "webhookId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Webhook deleted successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden - client users aren't allowed to perform webhook actions"
+                    }
+                }
+            }
+        },
+        "/templates.json": {
+            "get": {
+                "tags": ["Templates"],
+                "summary": "Get templates",
+                "description": "Returns a paginated list of active Templates visible to the current user",
+                "operationId": "getTemplates",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter templates by status",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": ["active", "archived", "trashed"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of templates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Template"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Templates"],
+                "summary": "Create a template",
+                "description": "Creates a new template",
+                "operationId": "createTemplate",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["name"],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Template created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            }
+                        }
+                    },
+                    "507": {
+                        "description": "Account project/team limit reached",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/{templateId}.json": {
+            "get": {
+                "tags": ["Templates"],
+                "summary": "Get a template",
+                "description": "Returns details of a specific template",
+                "operationId": "getTemplate",
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Template details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Templates"],
+                "summary": "Update a template",
+                "description": "Updates a specific template",
+                "operationId": "updateTemplate",
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Template updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Template"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": ["Templates"],
+                "summary": "Trash a template",
+                "description": "Marks a template as trashed",
+                "operationId": "trashTemplate",
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Template trashed successfully"
+                    }
+                }
+            }
+        },
+        "/templates/{templateId}/project_constructions.json": {
+            "post": {
+                "tags": ["Templates"],
+                "summary": "Create a project construction",
+                "description": "Creates a new project from a template",
+                "operationId": "createProjectConstruction",
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["project"],
+                                "properties": {
+                                    "project": {
+                                        "type": "object",
+                                        "required": ["name"],
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "description": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Project construction created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProjectConstruction"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/templates/{templateId}/project_constructions/{constructionId}.json": {
+            "get": {
+                "tags": ["Templates"],
+                "summary": "Get a project construction",
+                "description": "Returns the status of a project construction",
+                "operationId": "getProjectConstruction",
+                "parameters": [
+                    {
+                        "name": "templateId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "constructionId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Project construction details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProjectConstruction"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/vaults/{vaultId}/documents.json": {
+            "get": {
+                "tags": ["Documents"],
+                "summary": "Get documents",
+                "description": "Returns a paginated list of active documents in the project's vault",
+                "operationId": "getDocuments",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "vaultId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of documents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Document"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": ["Documents"],
+                "summary": "Create a document",
+                "description": "Creates a new document in the project's vault",
+                "operationId": "createDocument",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "vaultId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "required": ["title", "content"],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Title of the document"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Body of the document in HTML format. See Rich text guide for allowed HTML tags"
+                                    },
+                                    "status": {
+                                        "type": "string",
+                                        "enum": ["active"],
+                                        "description": "Set to active to publish immediately"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Document created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/buckets/{bucketId}/documents/{documentId}.json": {
+            "get": {
+                "tags": ["Documents"],
+                "summary": "Get a document",
+                "description": "Returns a specific document",
+                "operationId": "getDocument",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Document details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": ["Documents"],
+                "summary": "Update a document",
+                "description": "Updates a specific document's title and content",
+                "operationId": "updateDocument",
+                "parameters": [
+                    {
+                        "name": "bucketId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "documentId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "description": "Title of the document"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "Body of the document in HTML format. See Rich text guide for allowed HTML tags"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Document updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Document"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "components": {
@@ -1134,6 +2801,898 @@
                         "items": {
                             "$ref": "#/components/schemas/Person"
                         }
+                    }
+                }
+            },
+            "Column": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "subscribers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        }
+                    },
+                    "color": {
+                        "type": "string",
+                        "nullable": true,
+                        "enum": ["white", "red", "orange", "yellow", "green", "blue", "aqua", "purple", "gray", "pink", "brown"]
+                    },
+                    "cards_count": {
+                        "type": "integer"
+                    },
+                    "comment_count": {
+                        "type": "integer"
+                    },
+                    "cards_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "Card": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "subscription_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "comments_count": {
+                        "type": "integer"
+                    },
+                    "comments_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "completed": {
+                        "type": "boolean"
+                    },
+                    "content": {
+                        "type": "string"
+                    },
+                    "due_on": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "assignees": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        }
+                    },
+                    "completion_subscribers": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        }
+                    },
+                    "completion_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "comment_count": {
+                        "type": "integer"
+                    },
+                    "steps": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Step"
+                        }
+                    }
+                }
+            },
+            "Step": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "completed": {
+                        "type": "boolean"
+                    },
+                    "due_on": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "assignees": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Person"
+                        }
+                    },
+                    "completion_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "Template": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["active", "archived", "trashed"]
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "dock": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "title": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "enabled": {
+                                    "type": "boolean"
+                                },
+                                "position": {
+                                    "type": "integer",
+                                    "nullable": true
+                                },
+                                "url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                },
+                                "app_url": {
+                                    "type": "string",
+                                    "format": "uri"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "ProjectConstruction": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["pending", "completed"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "project": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "description": {
+                                "type": "string",
+                                "nullable": true
+                            },
+                            "purpose": {
+                                "type": "string"
+                            },
+                            "clients_enabled": {
+                                "type": "boolean"
+                            },
+                            "bookmark_url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "dock": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer"
+                                        },
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "enabled": {
+                                            "type": "boolean"
+                                        },
+                                        "position": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        },
+                                        "app_url": {
+                                            "type": "string",
+                                            "format": "uri"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Chatbot": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "service_name": {
+                        "type": "string"
+                    },
+                    "command_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "lines_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "ChatbotCommand": {
+                "type": "object",
+                "properties": {
+                    "command": {
+                        "type": "string"
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "callback_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "Webhook": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "payload_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "types": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    }
+                }
+            },
+            "WebhookWithDeliveries": {
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Webhook"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "recent_deliveries": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/WebhookDelivery"
+                                },
+                                "description": "25 most recent delivery exchanges, sorted with most recent first"
+                            }
+                        }
+                    }
+                ]
+            },
+            "WebhookDelivery": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "request": {
+                        "type": "object",
+                        "properties": {
+                            "headers": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "string"
+                                }
+                            },
+                            "body": {
+                                "$ref": "#/components/schemas/WebhookEvent"
+                            }
+                        }
+                    },
+                    "response": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "integer"
+                            },
+                            "headers": {
+                                "type": "object",
+                                "additionalProperties": {
+                                    "type": "string"
+                                }
+                            },
+                            "message": {
+                                "type": "string"
+                            },
+                            "body": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "WebhookEvent": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "kind": {
+                        "type": "string",
+                        "description": "Type of event (e.g., message_created, todo_completed)"
+                    },
+                    "details": {
+                        "type": "object",
+                        "additionalProperties": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "recording": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "status": {
+                                "type": "string"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date-time"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "inherits_status": {
+                                "type": "boolean"
+                            },
+                            "type": {
+                                "type": "string"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "comments_count": {
+                                "type": "integer"
+                            },
+                            "comments_url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "parent": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    },
+                                    "url": {
+                                        "type": "string",
+                                        "format": "uri"
+                                    },
+                                    "app_url": {
+                                        "type": "string",
+                                        "format": "uri"
+                                    }
+                                }
+                            },
+                            "bucket": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    },
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "creator": {
+                                "$ref": "#/components/schemas/Person"
+                            },
+                            "content": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "copy": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "bucket": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "integer"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "Document": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": ["active", "archived", "trashed"]
+                    },
+                    "visible_to_clients": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "inherits_status": {
+                        "type": "boolean"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": ["Document"]
+                    },
+                    "url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "app_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "bookmark_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "subscription_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "comments_count": {
+                        "type": "integer"
+                    },
+                    "comments_url": {
+                        "type": "string",
+                        "format": "uri"
+                    },
+                    "position": {
+                        "type": "integer"
+                    },
+                    "parent": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "title": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Vault"]
+                            },
+                            "url": {
+                                "type": "string",
+                                "format": "uri"
+                            },
+                            "app_url": {
+                                "type": "string",
+                                "format": "uri"
+                            }
+                        }
+                    },
+                    "bucket": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "type": {
+                                "type": "string",
+                                "enum": ["Project"]
+                            }
+                        }
+                    },
+                    "creator": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "HTML content of the document"
                     }
                 }
             }

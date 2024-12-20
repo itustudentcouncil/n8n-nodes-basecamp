@@ -42,7 +42,7 @@ class Basecamp {
             credentials: [
                 {
                     name: "basecampOAuth2Api",
-                    required: false
+                    required: true
                 }
             ],
             requestDefaults: {
@@ -50,7 +50,7 @@ class Basecamp {
                     Accept: "application/json",
                     "Content-Type": "application/json"
                 },
-                baseURL: "https://3.basecampapi.com/5278257"
+                baseURL: '={{"https://3.basecampapi.com/" + $credentials.basecampId}}',
             },
             version: 1,
             group: ["transform"],

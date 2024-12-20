@@ -9,12 +9,6 @@ class Basecamp {
         this.documentationUrl = "raindrop";
         this.properties = [
             {
-                displayName: "Grant Type",
-                name: "grantType",
-                type: "hidden",
-                default: "authorizationCode"
-            },
-            {
                 displayName: "Basecamp ID",
                 name: "basecampId",
                 type: "string",
@@ -31,6 +25,12 @@ class Basecamp {
                 name: "accessTokenUrl",
                 type: "hidden",
                 default: "https://launchpad.37signals.com/authorization/token?type=web_server"
+            },
+            {
+                displayName: "Grant Type",
+                name: "grantType",
+                type: "hidden",
+                default: "authorizationCode"
             },
             {
                 displayName: "Auth URI Query Parameters",

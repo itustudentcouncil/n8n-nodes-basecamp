@@ -11,12 +11,6 @@ export class Basecamp implements ICredentialType {
 
   properties: INodeProperties[] = [
     {
-      displayName: "Grant Type",
-      name: "grantType",
-      type: "hidden",
-      default: "authorizationCode"
-    },
-    {
       displayName: "Basecamp ID",
       name: "basecampId",
       type: "string",
@@ -35,6 +29,12 @@ export class Basecamp implements ICredentialType {
       type: "hidden",
       default:
         "https://launchpad.37signals.com/authorization/token?type=web_server"
+    },
+    {
+      displayName: "Grant Type",
+      name: "grantType",
+      type: "hidden",
+      default: "authorizationCode"
     },
     {
       displayName: "Auth URI Query Parameters",
