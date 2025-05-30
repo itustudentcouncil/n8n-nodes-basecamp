@@ -45,6 +45,7 @@ class Basecamp {
                     required: true
                 }
             ],
+            useableAsTool: true,
             requestDefaults: {
                 headers: {
                     Accept: "application/json",
